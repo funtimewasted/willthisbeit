@@ -631,7 +631,46 @@
 
         // --- Rendering Functions ---
         function renderMultipleChoice(q,c){if(!q.options?.length)return c.textContent='Err Opts';const oD=document.createElement('div');oD.className='options-container';q.options.forEach((o,i)=>{const id=`option-${i}`,l=document.createElement('label');l.className='option-label';l.htmlFor=id;const inp=document.createElement('input');inp.type='radio';inp.name='question-option';inp.value=i;inp.id=id;inp.className='option-input';inp.addEventListener('change',()=>{const s=document.getElementById('submit-btn');if(s)s.disabled=false;});const t=document.createElement('span');t.className='option-text';t.textContent=o;l.append(inp,t);oD.appendChild(l);});c.appendChild(oD);}
-        function renderMatching(q,c){if(!q.prompts?.length||!q.matches?.length||q.prompts.length!==q.matches.length)return c.textContent='Err Match';quizState.matchingState.userPairs={};const i=document.createElement('p');i.className='matching-instructions'; /* Text set by updateUiLanguage */ c.appendChild(i);const o=document.createElement('div');o.style.position='relative';matchingSvgElement=document.createElementNS('http://www.w3.org/2000/svg','svg');matchingSvgElement.id='matching-arrow-svg';matchingSvgElement.innerHTML='<defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="var(--accent-color)"/></marker></defs>';o.appendChild(matchingSvgElement);const mC=document.createElement('div');mC.className='matching-container';mC.id='matching-cols';const pC=document.createElement('div');pC.className='matching-column';pC.innerHTML='<h4>Items</h4>';const maC=document.createElement('div');maC.className='matching-column';maC.innerHTML='<h4>Matches</h4>';const sM=q.matches.map((t,ix)=>({text:t,originalIndex:ix})).sort(()=>.5-Math.random());q.prompts.forEach((pT,pI)=>{const it=document.createElement('div');it.className='matching-item prompt-item';it.textContent=pT;it.dataset.index=pI;it.id=`prompt-${pI}`;it.onclick=handleMatchingClick;pC.appendChild(it);});sM.forEach(mO=>{const it=document.createElement('div');it.className='matching-item match-item';it.textContent=mO.text;it.dataset.index=mO.originalIndex;it.id=`match-${mO.originalIndex}`;it.onclick=handleMatchingClick;maC.appendChild(it);});mC.append(pC,maC);o.appendChild(mC);c.appendChild(o); updateUiLanguage(mainContainerElement.classList.contains('rtl-layout')?'ar':'en'); /* Set instruction text */ }
+        function renderMatching(question, container) {
+             if (!question.prompts?.length || !question.matches?.length || question.prompts.length !== question.matches.length) { container.textContent = 'Err: Match data invalid.'; return; }
+             quizState.matchingState.userPairs = {};
+             const instr = document.createElement('p');
+             instr.className = 'matching-instructions'; /* Text set by updateUiLanguage */
+             container.appendChild(instr);
+
+             const outer = document.createElement('div');
+             outer.style.position = 'relative';
+             // ADD UNIQUE ID - using currentQuestionIndex for uniqueness within the quiz session
+             outer.id = `matching-outer-${quizState.currentQuestionIndex}`;
+             container.appendChild(outer); // Add outer container to the main container passed in
+
+             matchingSvgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+             matchingSvgElement.id = 'matching-arrow-svg';
+             matchingSvgElement.innerHTML = '<defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="var(--accent-color)"/></marker></defs>';
+             outer.appendChild(matchingSvgElement); // Add SVG to the outer container
+
+             const matchCont = document.createElement('div');
+             matchCont.className = 'matching-container';
+             matchCont.id = 'matching-cols';
+             const promCol = document.createElement('div');
+             promCol.className = 'matching-column';
+             promCol.id = 'prompts-column';
+             promCol.innerHTML = '<h4>Items</h4>';
+             const matCol = document.createElement('div');
+             matCol.className = 'matching-column';
+             matCol.id = 'matches-column';
+             matCol.innerHTML = '<h4>Matches</h4>';
+
+             const shuffledMatches = question.matches.map((text, originalIndex) => ({ text, originalIndex })).sort(() => 0.5 - Math.random());
+             question.prompts.forEach((promptText, promptIndex) => { const item = document.createElement('div'); item.className = 'matching-item prompt-item'; item.textContent = promptText; item.dataset.index = promptIndex; item.id = `prompt-${promptIndex}`; item.onclick = handleMatchingClick; promCol.appendChild(item); });
+             shuffledMatches.forEach(matchObject => { const item = document.createElement('div'); item.className = 'matching-item match-item'; item.textContent = matchObject.text; item.dataset.index = matchObject.originalIndex; item.id = `match-${matchObject.originalIndex}`; item.onclick = handleMatchingClick; matCol.appendChild(item); });
+
+             matchCont.append(promCol, matCol);
+             outer.appendChild(matchCont); // Add columns container to the outer container
+            // container.appendChild(outer); // Already done above
+
+             updateUiLanguage(mainContainerElement.classList.contains('rtl-layout')?'ar':'en'); /* Set instruction text */
+        }
         function renderOrdering(q,c){if(!q.items?.length)return c.textContent='Err Ord';const n=q.items.length,i=document.createElement('p');i.className='ordering-instructions'; /* Text set by updateUiLanguage */ c.appendChild(i);const oC=document.createElement('div');oC.className='ordering-container';oC.id='ordering-list';const ch=()=>{const a=oC.querySelectorAll('.ordering-select'),s=Array.from(a).every(sl=>sl.value!==""),b=document.getElementById('submit-btn');if(b)b.disabled=!s;};const sI=q.items.map((t,ix)=>({text:t,originalIndex:ix})).sort(()=>.5-Math.random());sI.forEach(({text:t,originalIndex:oI})=>{const d=document.createElement('div');d.className='ordering-item';d.dataset.originalIndex=oI;const s=document.createElement('select');s.className='ordering-select';s.dataset.itemIndex=oI;const dO=document.createElement('option');dO.value="";dO.textContent="-";dO.selected=true;dO.disabled=true;s.appendChild(dO);for(let j=1;j<=n;j++){const op=document.createElement('option');op.value=j;op.textContent=j;s.appendChild(op);}s.addEventListener('change',ch);const sp=document.createElement('span');sp.className='ordering-text';sp.textContent=t;d.append(s,sp);oC.appendChild(d);});c.appendChild(oC); updateUiLanguage(mainContainerElement.classList.contains('rtl-layout')?'ar':'en'); /* Set instruction text */ }
 
         // --- Interaction Handlers ---
@@ -773,30 +812,73 @@
         // Parameters: pE = prompt element, mE = match element, pI = prompt index
         // --- Arrow Drawing (Corrected for RTL) ---
         // Parameters: pE = prompt element, mE = match element, pI = prompt index
+        // --- Arrow Drawing (WITH DEBUGGING) ---
         function drawArrow(pE, mE, pI) {
-            if (!matchingSvgElement || !pE || !mE) return;
-            const sR = matchingSvgElement.getBoundingClientRect();
-            const pR = pE.getBoundingClientRect();
-            const mR = mE.getBoundingClientRect();
+            // Get the specific outer container for this question instance
+            const outerDiv = document.getElementById(`matching-outer-${quizState.currentQuestionIndex}`);
+
+            if (!matchingSvgElement || !pE || !mE || !outerDiv) {
+                 console.warn("drawArrow: Missing elements required for drawing.", { svg: !!matchingSvgElement, pE: !!pE, mE: !!mE, outer: !!outerDiv });
+                 return;
+            }
+
+            const svgRect = matchingSvgElement.getBoundingClientRect(); // SVG position relative to viewport
+            const outerRect = outerDiv.getBoundingClientRect();     // Outer container relative to viewport
+            const pR = pE.getBoundingClientRect();                  // Prompt relative to viewport
+            const mR = mE.getBoundingClientRect();                  // Match relative to viewport
             const isRTL = mainContainerElement.classList.contains('rtl-layout');
 
-            // LTR: Start Right edge of Prompt -> End Left edge of Match
-            // RTL: Start Left edge of Prompt  -> End Right edge of Match
-            const startX = isRTL ? (pR.left - sR.left) : (pR.right - sR.left);
-            const startY = pR.top + pR.height / 2 - sR.top;
-            const endX   = isRTL ? (mR.right - sR.left) : (mR.left - sR.left);
-            const endY   = mR.top + mR.height / 2 - sR.top;
+            console.log(`--- Arrow ${pI} (${isRTL ? 'RTL' : 'LTR'}) ---`);
+            console.log("Outer Rect:", JSON.stringify(outerRect));
+            console.log("SVG Rect:", JSON.stringify(svgRect));
+            console.log("Prompt Rect (pR):", JSON.stringify(pR));
+            console.log("Match Rect (mR):", JSON.stringify(mR));
 
-            let l = matchingSvgElement.querySelector(`#arrow-${pI}`);
-            if (!l) {
-                l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                l.id = `arrow-${pI}`;
-                matchingSvgElement.appendChild(l);
+            let startX, startY, endX, endY;
+
+            // Calculate coordinates relative to the SVG's top-left corner.
+            // Since SVG is position:absolute top:0 left:0 within outerDiv, outerRect.left/top
+            // should be the same as svgRect.left/top IF outerDiv has no padding/border affecting SVG position.
+            // Let's consistently use svgRect as the reference frame origin.
+
+            if (isRTL) {
+                // RTL: Match column is visually LEFT, Prompt column is visually RIGHT.
+                // Arrow should go from RIGHT edge of MATCH item to LEFT edge of PROMPT item.
+                startX = mR.right - svgRect.left;   // Right edge of the visually left item (Match)
+                startY = mR.top + mR.height / 2 - svgRect.top;
+                endX   = pR.left - svgRect.left;    // Left edge of the visually right item (Prompt)
+                endY   = pR.top + pR.height / 2 - svgRect.top;
+                console.log("RTL Calc:", {startX, startY, endX, endY});
+            } else {
+                // LTR: Prompt column is visually LEFT, Match column is visually RIGHT.
+                // Arrow should go from RIGHT edge of PROMPT item to LEFT edge of MATCH item.
+                startX = pR.right - svgRect.left;   // Right edge of the visually left item (Prompt)
+                startY = pR.top + pR.height / 2 - svgRect.top;
+                endX   = mR.left - svgRect.left;    // Left edge of the visually right item (Match)
+                endY   = mR.top + mR.height / 2 - svgRect.top;
+                console.log("LTR Calc:", {startX, startY, endX, endY});
             }
-            l.setAttribute('x1', startX); l.setAttribute('y1', startY);
-            l.setAttribute('x2', endX); l.setAttribute('y2', endY);
-            l.setAttribute('stroke', 'var(--accent-color)'); l.setAttribute('stroke-width', '2');
-            l.setAttribute('marker-end', 'url(#arrowhead)'); l.style.opacity = '1';
+
+
+            let line = matchingSvgElement.querySelector(`#arrow-${pI}`);
+            if (!line) {
+                line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.id = `arrow-${pI}`;
+                matchingSvgElement.appendChild(line);
+            }
+
+             if (isNaN(startX) || isNaN(startY) || isNaN(endX) || isNaN(endY)) {
+                 console.error("drawArrow: Invalid coordinates calculated", { startX, startY, endX, endY, pI });
+                 line.style.opacity = '0'; // Hide line if coords are bad
+                 return;
+             }
+
+            line.setAttribute('x1', startX); line.setAttribute('y1', startY);
+            line.setAttribute('x2', endX); line.setAttribute('y2', endY);
+            line.setAttribute('stroke', 'var(--accent-color)'); line.setAttribute('stroke-width', '2');
+            line.setAttribute('marker-end', 'url(#arrowhead)');
+            // Ensure opacity is reset if it was hidden due to previous bad coords
+            line.style.opacity = '1';
         }
         function removeArrow(pI){if(!matchingSvgElement)return;const l=matchingSvgElement.querySelector(`#arrow-${pI}`);if(l){l.style.opacity='0';setTimeout(()=>l.remove(),300);}}
         function updateAllArrowPositions(){if(!matchingSvgElement||!quizState||!quizState.questions[quizState.currentQuestionIndex]||quizState.questions[quizState.currentQuestionIndex].type!=='matching')return;const p=quizState.matchingState.userPairs;for(const pI in p){if(p.hasOwnProperty(pI)){const mI=p[pI],pE=document.getElementById(`prompt-${pI}`),mE=document.getElementById(`match-${mI}`);if(pE&&mE)drawArrow(pE,mE,pI);else removeArrow(pI);}}}

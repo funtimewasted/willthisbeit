@@ -814,7 +814,7 @@
         // Parameters: pE = prompt element, mE = match element, pI = prompt index
         // --- Arrow Drawing (WITH DEBUGGING) ---
                 // --- Arrow Drawing (Attempt 4 - Focus on RTL End X) ---
-        function drawArrow(pE, mE, pI) {
+         function drawArrow(pE, mE, pI) {
             const outerDiv = document.getElementById(`matching-outer-${quizState.currentQuestionIndex}`);
             if (!matchingSvgElement || !pE || !mE || !outerDiv) {
                  console.warn("drawArrow: Missing elements."); return;
@@ -859,7 +859,42 @@
                 // We want its position relative to the SVG's left edge.
                 endX = pR.left - svgRect.left; // Let's try this simple one again, maybe a typo before?
 
-          
+                // --- IF THE ABOVE STILL FAILS, try calculating from the right ---
+                // endX = svgRect.width - (svgRect.right - pR.left); // Distance from svg right edge to prompt left edge? No..
+                // endX = svgRect.width - (pR.right - svgRect.left); // Maybe start from svg width and subtract prompt's right position relative to svg?
+
+
+                console.log("RTL Calculated:", { startX, startY, endX, endY });
+
+            } else {
+                // LTR: User clicks Prompt (Visually LEFT), then Match (Visually RIGHT).
+                // Arrow START: Right edge of PROMPT element (pE).
+                // Arrow END: Left edge of MATCH element (mE).
+                startX = pR.right - svgRect.left;
+                //startY = pR.top + pR.height / 2 - svgRect.top; // Already calculated above
+                endX   = mR.left - svgRect.left;
+                //endY   = mR.top + mR.height / 2 - svgRect.top; // Already calculated above
+                 console.log("LTR Calculated:", { startX, startY, endX, endY });
+            }
+
+            let line = matchingSvgElement.querySelector(`#arrow-${pI}`);
+            if (!line) {
+                line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.id = `arrow-${pI}`;
+                matchingSvgElement.appendChild(line);
+            }
+
+             if (isNaN(startX) || isNaN(startY) || isNaN(endX) || isNaN(endY)) {
+                 console.error("drawArrow: Invalid coordinates", { startX, startY, endX, endY, pI });
+                 line.style.opacity = '0'; return;
+             }
+
+            line.setAttribute('x1', startX); line.setAttribute('y1', startY);
+            line.setAttribute('x2', endX); line.setAttribute('y2', endY);
+            line.setAttribute('stroke', 'var(--accent-color)'); line.setAttribute('stroke-width', '2');
+            line.setAttribute('marker-end', 'url(#arrowhead)');
+            line.style.opacity = '1';
+        }
         function removeArrow(pI){if(!matchingSvgElement)return;const l=matchingSvgElement.querySelector(`#arrow-${pI}`);if(l){l.style.opacity='0';setTimeout(()=>l.remove(),300);}}
         function updateAllArrowPositions(){if(!matchingSvgElement||!quizState||!quizState.questions[quizState.currentQuestionIndex]||quizState.questions[quizState.currentQuestionIndex].type!=='matching')return;const p=quizState.matchingState.userPairs;for(const pI in p){if(p.hasOwnProperty(pI)){const mI=p[pI],pE=document.getElementById(`prompt-${pI}`),mE=document.getElementById(`match-${mI}`);if(pE&&mE)drawArrow(pE,mE,pI);else removeArrow(pI);}}}
         function setupArrowObserver(){const t=document.getElementById('matching-cols');if(!t||!matchingSvgElement)return console.warn("Observer: Target/SVG missing.");if(matchingArrowObserver)matchingArrowObserver.disconnect();const cfg={attributes:true,childList:true,subtree:true,characterData:true},cb=debounce(updateAllArrowPositions,50);matchingArrowObserver=new MutationObserver(cb);matchingArrowObserver.observe(t,cfg);const qCT=document.getElementById('quiz-container');if(qCT)matchingArrowObserver.observe(qCT,{attributes:true,subtree:false});setTimeout(updateAllArrowPositions,100);}

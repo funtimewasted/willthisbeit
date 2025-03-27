@@ -67,80 +67,65 @@
 
         /* --- RTL Layout --- */
         .rtl-layout { direction: rtl; }
-        .rtl-layout * { /* Ensure nested elements inherit, good default */ direction: rtl; }
-        .rtl-layout .header { text-align: right; } /* Adjust header text alignment */
-        .rtl-layout .nav-btn { flex-direction: row-reverse; } /* Flip icon/text */
-        .rtl-layout .nav-btn span:first-child { margin-left: 0; margin-right: 6px; } /* Adjust icon margin */
-        .rtl-layout .section-content {
-            text-align: right;
-            border-left-width: 1px; /* Reset left border */
-            border-left-color: var(--button-border);
-            border-right-width: 4px; /* Apply status border to right */
-            border-right-color: transparent; /* Default right */
-        }
-        /* RTL Status Border Colors */
-        .rtl-layout .section-content.lesson-complete-perfect {
-            border-right-color: var(--lesson-perfect-border);
-            border-left-color: var(--lesson-perfect-border); /* Match overall border */
-        }
-        .rtl-layout .section-content.lesson-complete-imperfect {
-            border-right-color: var(--lesson-imperfect-border);
-            border-left-color: var(--lesson-imperfect-border); /* Match overall border */
-        }
-        .rtl-layout .lesson-title-text { margin-right: 0; margin-left: 10px; } /* Swap margin */
-        .rtl-layout .lesson-stats-display { margin-left: 10px; margin-right: auto; } /* Push left */
-        .rtl-layout .lesson-q-count { margin-left: 0; margin-right: 10px; } /* Swap margin */
-        .rtl-layout #quiz-header { text-align: right; }
-        .rtl-layout #quiz-header #back-to-topics-btn { /* Flip button content */
-            flex-direction: row-reverse;
-             /* Override text via JS */
-        }
-        /* Remove default arrow and rely on JS text */
-        #back-to-topics-btn > span { display: inline-block; margin: 0 4px; }
-        .rtl-layout #back-to-topics-btn > span { display: inline-block; margin: 0 4px; }
+        .rtl-layout * { direction: rtl; } /* Inherit by default */
+        .rtl-layout [dir="ltr"] * { direction: ltr; } /* Allow overriding for specific LTR content */
 
-        .rtl-layout .question-progress { text-align: left; } /* Opposite of default */
+        .rtl-layout .header { text-align: right; }
+        .rtl-layout .nav-btn { flex-direction: row-reverse; }
+        .rtl-layout .nav-btn span:first-child { margin-left: 0; margin-right: 6px; }
+        .rtl-layout .section-content {
+            text-align: right; border-left-width: 1px; border-left-color: var(--button-border);
+            border-right-width: 4px; border-right-color: transparent;
+        }
+        .rtl-layout .section-content.lesson-complete-perfect { border-right-color: var(--lesson-perfect-border); border-left-color: var(--lesson-perfect-border); }
+        .rtl-layout .section-content.lesson-complete-imperfect { border-right-color: var(--lesson-imperfect-border); border-left-color: var(--lesson-imperfect-border); }
+        .rtl-layout .lesson-title-text { margin-right: 0; margin-left: 10px; }
+        .rtl-layout .lesson-stats-display { margin-left: 10px; margin-right: auto; }
+        .rtl-layout .lesson-q-count { margin-left: 0; margin-right: 10px; }
+        .rtl-layout #quiz-header { text-align: right; }
+        .rtl-layout #quiz-header #back-to-topics-btn { flex-direction: row-reverse; }
+        #back-to-topics-btn > span:first-child, /* LTR Arrow */
+        .rtl-layout #back-to-topics-btn > span:first-child { /* RTL Arrow */
+            display: inline-block; margin: 0 4px;
+        }
+        .rtl-layout .question-progress { text-align: left; }
         .rtl-layout .question-text { text-align: right; }
-        .rtl-layout .question-text strong { margin-right: 0; margin-left: 5px; } /* Flip Q: spacing */
-        .rtl-layout .options-container { /* Maybe add padding-right instead of left for input */ }
-        .rtl-layout .option-label { flex-direction: row-reverse; } /* Input on right */
+        .rtl-layout .question-text strong { margin-right: 0; margin-left: 5px; }
+        .rtl-layout .option-label { flex-direction: row-reverse; }
         .rtl-layout .option-input { margin-right: 0; margin-left: 15px; }
-        /* Matching - Flex order should flip columns. Arrows might need JS coord adjustment if issues arise */
-        .rtl-layout .matching-container { flex-direction: row-reverse; }
+        .rtl-layout .matching-container { flex-direction: row-reverse; } /* Flip columns */
         .rtl-layout .matching-column h4 { text-align: right; }
-        .rtl-layout .ordering-item { flex-direction: row-reverse; } /* Select on right */
+        .rtl-layout .ordering-item { flex-direction: row-reverse; }
         .rtl-layout .ordering-select { margin-right: 0; margin-left: 15px; }
         .rtl-layout #feedback-container { text-align: right; }
-        .rtl-layout .incorrect-feedback span { text-align: right; } /* Ensure detail text aligns */
-        .rtl-layout #quiz-buttons-container { justify-content: flex-start; } /* Align buttons left */
-        /* Flip buttons inside containers if needed */
-        .rtl-layout .results-actions .back-to-topics-btn { margin-left: 0; margin-right: auto; } /* Push left */
-        .rtl-layout .review-actions .back-to-topics-btn { margin-left: 0; margin-right: auto; } /* Push left */
+        .rtl-layout .incorrect-feedback span { text-align: right; }
+        .rtl-layout #quiz-buttons-container { justify-content: flex-start; }
+        .rtl-layout .results-actions .back-to-topics-btn { margin-left: 0; margin-right: auto; }
+        .rtl-layout .review-actions .back-to-topics-btn { margin-left: 0; margin-right: auto; }
         .rtl-layout .results-details { text-align: right; }
-        .rtl-layout .results-details p { flex-direction: row-reverse; } /* Flip icon/label/value */
-        .rtl-layout .results-details p strong { min-width: auto; margin-right: 0; margin-left: 10px; } /* Adjust label spacing */
-        .rtl-layout .results-details p .detail-icon { /* Ensure icon stays aligned */ }
-        .rtl-layout .review-question-header { /* Status right, number left */ flex-direction: row-reverse; }
+        .rtl-layout .results-details p { flex-direction: row-reverse; }
+        .rtl-layout .results-details p strong { min-width: auto; margin-right: 0; margin-left: 10px; }
+        .rtl-layout .review-question-header { flex-direction: row-reverse; }
         .rtl-layout .review-question-text { text-align: right; }
         .rtl-layout .review-mc-answer p, .rtl-layout .review-matching-answer p, .rtl-layout .review-ordering-answer p { text-align: right; }
-        .rtl-layout .review-mc-answer p strong, .rtl-layout .review-matching-answer p strong, .rtl-layout .review-ordering-answer p strong { margin-right: 0; margin-left: 5px; } /* Swap margin */
-        /* Matching Review */
+        .rtl-layout .review-mc-answer p strong, .rtl-layout .review-matching-answer p strong, .rtl-layout .review-ordering-answer p strong { margin-right: 0; margin-left: 5px; }
         .rtl-layout .review-matching-grid { flex-direction: row-reverse; }
         .rtl-layout .review-matching-column div { text-align: right; }
-        /* Ordering Review */
-        .rtl-layout .review-ordering-list-item { flex-direction: row-reverse; } /* Number right, text left */
+        .rtl-layout .review-ordering-list-item { flex-direction: row-reverse; }
         .rtl-layout .review-order-number { margin-right: 0; margin-left: 8px; }
-         /* Settings Modal */
-         .rtl-layout #settings-modal * { direction: rtl; } /* Force RTL inside modal */
-         .rtl-layout .modal-header { flex-direction: row-reverse; }
-         .rtl-layout .modal-title { /* Ensure alignment */ }
-         .rtl-layout .modal-close-btn { /* Ensure alignment */ }
-         .rtl-layout .theme-options label { flex-direction: row-reverse; }
-         .rtl-layout .theme-options input[type="radio"] { margin-right: 0; margin-left: 10px;}
-         .rtl-layout .modal-footer { text-align: left; }
+        .rtl-layout #settings-modal * { direction: rtl; }
+        .rtl-layout .modal-header { flex-direction: row-reverse; }
+        .rtl-layout .theme-options label { flex-direction: row-reverse; }
+        .rtl-layout .theme-options input[type="radio"] { margin-right: 0; margin-left: 10px;}
+        .rtl-layout .modal-footer { text-align: left; }
+        .rtl-layout .question-review { border-left-width: 1px; border-left-color: var(--border-color); border-right-width: 5px; border-right-color: transparent; }
+        .rtl-layout .question-review.correct { border-right-color: var(--correct-border); }
+        .rtl-layout .question-review.incorrect { border-right-color: var(--incorrect-border); }
+        .rtl-layout .question-review.partial { border-right-color: var(--partial-border); }
+        /* Ensure icons in buttons display correctly */
+        .rtl-layout .btn > span:first-child { margin-left: 0; margin-right: 6px; }
 
-
-        /* --- Welcome View --- */
+        /* Welcome View */
         #welcome-view { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; text-align: center; background-color: var(--body-bg); color: var(--text-color); padding: 40px 20px; }
         #welcome-view h1 { font-size: 28px; color: var(--text-heading); margin-bottom: 15px; }
         #welcome-view p { font-size: 16px; color: var(--text-muted); max-width: 600px; line-height: 1.6; margin-bottom: 25px; }
@@ -148,7 +133,7 @@
         #welcome-view .info-section strong { display: block; margin-bottom: 5px; color: var(--text-heading); }
         #welcome-view .get-started-btn { margin-top: 30px; }
 
-        /* --- Main Container --- */
+        /* Main Container */
         .container { max-width: 1200px; margin: 20px auto; background-color: var(--container-bg); padding: 20px 30px; border-radius: 12px; box-shadow: 0 2px 10px var(--shadow-color); border: 1px solid var(--border-color); transition: background-color 0.3s ease, border-color 0.3s ease, opacity 0.5s ease; opacity: 1; }
         .container.initially-hidden { opacity: 0; pointer-events: none; }
 
@@ -171,7 +156,7 @@
         .semester-btn.active { background-color: var(--container-bg); color: var(--text-heading); box-shadow: 0 1px 3px var(--shadow-color); }
 
         /* Topic List */
-        #content { }
+        #content {}
         .semester-title-container { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
         .unit-title { font-size: 20px; font-weight: 600; color: var(--text-heading); margin: 0; }
         .section { background-color: var(--container-bg); border-radius: 12px; padding: 20px 25px; box-shadow: 0 1px 3px var(--shadow-color); border: 1px solid var(--border-color); margin-bottom: 20px; }
@@ -220,8 +205,8 @@
         .matching-item.selected { background-color: var(--accent-color-light); border-color: var(--accent-color); font-weight: 500; }
         .matching-item.matched { background-color: var(--matched-item-bg); border-color: var(--matched-item-border); cursor: pointer; opacity: 1.0; }
         #matching-arrow-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 1; }
-        #matching-arrow-svg line { stroke: var(--accent-color); stroke-width: 2; transition: all 0.3s ease; marker-end: url(#arrowhead); }
-        #matching-arrow-svg #arrowhead polygon { fill: var(--accent-color); }
+        #matching-arrow-svg line { stroke: var(--accent-color); stroke-width: 2; transition: stroke 0.3s ease, opacity 0.3s ease; marker-end: url(#arrowhead); } /* Added stroke transition */
+        #matching-arrow-svg #arrowhead polygon { fill: var(--accent-color); transition: fill 0.3s ease; }
 
         /* Ordering */
         .ordering-instructions { font-size: 15px; color: var(--text-muted); margin-bottom: 20px; }
@@ -277,9 +262,9 @@
         .score-percent-sign { font-size: 20px; font-weight: 500; color: var(--text-muted); margin-top: 4px; }
         .results-details { max-width: 500px; margin: 0 auto 35px auto; text-align: left; background-color: var(--feedback-bg); padding: 20px 30px; border-radius: 10px; border: 1px solid var(--feedback-border); box-shadow: 0 2px 5px var(--shadow-color); }
         .results-details p { margin: 12px 0; font-size: 16px; color: var(--text-color); display: flex; align-items: center; gap: 10px; }
-        .results-details p strong { color: var(--text-heading); min-width: 80px; display: inline-block; font-weight: 600; } /* Label */
-        .results-details p .detail-value { color: var(--text-muted); font-weight: 500; } /* Value */
-        .results-details p .detail-icon { font-size: 18px; color: var(--accent-color); width: 20px; text-align: center; } /* Icon */
+        .results-details p strong { color: var(--text-heading); min-width: 80px; display: inline-block; font-weight: 600; }
+        .results-details p .detail-value { color: var(--text-muted); font-weight: 500; }
+        .results-details p .detail-icon { font-size: 18px; color: var(--accent-color); width: 20px; text-align: center; }
 
         /* Review Answers */
         .review-container { padding: 10px 0; }
@@ -357,7 +342,6 @@
             </div>
             <div class="secondary-nav">
                  <div class="semester-toggle">
-                     <!-- Added IDs for translation -->
                      <button class="semester-btn active" data-semester="first" id="semester-btn-first">First Semester</button>
                      <button class="semester-btn" data-semester="second" id="semester-btn-second">Second Semester</button>
                  </div>
@@ -367,14 +351,11 @@
         <div id="quiz-view" class="hidden">
             <div id="quiz-header">
                 <h2 id="quiz-title">Quiz</h2>
-                <!-- Added ID and span for translation -->
                 <button class="btn back-to-topics-btn" id="back-to-topics-btn" onclick="showTopicList()"><span>⬅️</span> <span class="btn-text">Back to Topics</span></button>
             </div>
             <div id="quiz-container"></div>
             <div id="feedback-container" class="feedback-container hidden"></div>
-            <div id="quiz-buttons-container" class="quiz-buttons">
-                 <!-- Buttons generated by JS will have IDs added -->
-            </div>
+            <div id="quiz-buttons-container" class="quiz-buttons"></div>
         </div>
     </div>
 
@@ -392,63 +373,11 @@
 
     <script>
         // --- START OF topics.js ---
-        const topicsData = {
-            "english": {
-                "first": { "title": "First Semester", "units": [ { "title": "Unit 1", "lessons": [ { "title": "Vocabulary & Grammar Basics", "questions": [ { "type": "multiple_choice", "question": "Device in 'curtain of night fell'?", "options": ["Simile", "Metaphor", "Alliteration", "Hyperbole"], "answer": "Metaphor" }, { "type": "multiple_choice", "question": "'Ambiguous' means:", "options": ["Clear", "Uncertain", "Definite", "Determined"], "answer": "Uncertain" }, { "type": "ordering", "question": "Order alphabetically:", "items": ["Banana", "Apple", "Cherry", "Date", "Fig"], "answer": ["Apple", "Banana", "Cherry", "Date", "Fig"] }, { "type": "matching", "question": "Match country and capital:", "prompts": ["France", "Japan", "Egypt", "Brazil", "Canada"], "matches": ["Cairo", "Tokyo", "Paris", "Brasília", "Ottawa"], "answer": { "0": 2, "1": 1, "2": 0, "3": 3, "4": 4 } }, { "type": "ordering", "question": "Order tea steps:", "items": ["Add tea bag", "Boil water", "Pour water"], "answer": ["Boil water", "Add tea bag", "Pour water"] } ] }, { "title": "Past & Present Tenses & Question Tags", "questions": [ { "type": "multiple_choice", "question": "Correct tense: 'She ___ school.'", "options": ["go", "goes", "going", "went"], "answer": "goes" }, { "type": "multiple_choice", "question": "Correct tag: 'You're coming, ___?'", "options": ["aren't you", "don't you", "isn't you", "won't you"], "answer": "aren't you" } ] } ] }, { "title": "Unit 2", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "Future Forms", "questions": [] } ] }, { "title": "Unit 3", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "Habits & Clauses", "questions": [] } ] }, { "title": "Unit 4", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "Narration & Inversion", "questions": [] } ] } ] },
-                "second": { "title": "Second Semester", "units": [ { "title": "Unit 1", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "Modal & Related & Articles", "questions": [] } ] }, { "title": "Unit 2", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "Reported Speech & Reporting Verbs", "questions": [] } ] }, { "title": "Unit 3", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "The Passive", "questions": [] } ] }, { "title": "Unit 4", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "Conditionals & Modals", "questions": [] } ] }, { "title": "Unit 5", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "Modals & Clauses", "questions": [] } ] } ] }
-            },
-            "اللغة العربية": {
-                "first": {
-                    "title": "الفصل الأول",
-                    "units": [
-                        { "title": "الوحدة الأولى", "lessons": [
-                            { "title": "من القيم الإنسانية في القرآن", "questions": [
-                                {"type": "multiple_choice", "question": "ما معنى كلمة 'البر' في قوله تعالى 'لن تنالوا البر حتى تنفقوا مما تحبون'؟", "options": ["الخير", "الصدق", "العدل", "الوفاء"], "answer": "الخير"},
-                                {"type": "ordering", "question": "رتب مراحل الوحي حسب نزولها:", "items": ["اقرأ باسم ربك", "المدثر", "الفاتحة"], "answer": ["اقرأ باسم ربك", "المدثر", "الفاتحة"]}, // Example order
-                                {"type": "matching", "question": "صل بين المصطلح وتعريفه:", "prompts": ["التجويد", "التفسير", "الناسخ والمنسوخ"], "matches": ["علم يبحث في كيفية النطق الصحيح للقرآن", "علم بيان معاني القرآن الكريم", "علم يبحث في الآيات التي تغير حكمها"], "answer": {"0": 0, "1": 1, "2": 2}}
-                            ] },
-                            { "title": "اسلوب الطلب وجوابه المجزوم والتشبيه المفرد", "questions": [] } ] },
-                        { "title": "الوحدة الثانية", "lessons": [ { "title": "عمانيات", "questions": [] }, { "title": "صور الفاعل والتشبيه التمثيلي", "questions": [] } ] },
-                        { "title": "الوحدة الثالثة", "lessons": [ { "title": "الزهايمر-الخرف المبكر", "questions": [] }, { "title": "صور المبتدأ والخبر والجملة الخبرية والإنشائية", "questions": [] } ] },
-                        { "title": "الوحدة الرابعة", "lessons": [ { "title": "الإعلام ومشروع النهوض باللغة العربية", "questions": [] }, { "title": "المفعول معه والأمر", "questions": [] } ] },
-                        { "title": "الوحدة الخامسة", "lessons": [ { "title": "التعليم التقني بوابة المستقبل في عالم متغير", "questions": [] }, { "title": "انواع ما والإستفهام", "questions": [] } ] }
-                    ]
-                },
-                "second": { "title": "الفصل الثاني", "units": [ { "title": "الوحدة الأولى", "lessons": [ { "title": "في فتح القدس", "questions": [] }, { "title": "معاني حروف الجر والتشخيص", "questions": [] } ] }, { "title": "الوحدة الثانية", "lessons": [ { "title": "قصة-حفنة تمر", "questions": [] }, { "title": "اسم الفاعل واسم المفعول والطباق والمقابلة", "questions": [] } ] }, { "title": "الوحدة الثالثة", "lessons": [ { "title": "شاعرات من بلدي", "questions": [] }, { "title": "اسم الزمان واسم المكان وجمع التكسير (القلة والكثرة)", "questions": [] } ] }, { "title": "الوحدة الرابعة", "lessons": [ { "title": "من مقامات بديع الزمان الهمذاني", "questions": [] }, { "title": "مصدر المرة ومصدر الهيئة والبحر المتدارك", "questions": [] } ] }, { "title": "الوحدة الخامسة", "lessons": [ { "title": "الذكاء الاصطناعي-عالم جديد", "questions": [] }, { "title": "اسم الآلة", "questions": [] } ] } ] }
-            },
-             "التاريخ": {
-                "first": {
-                    "title": "الفصل الأول",
-                    "units": [
-                        { "title": "الأردن في العصور القديمة", "lessons": [
-                            { "title": "الأردن في العصور الحجرية", "questions": [
-                                {"type": "multiple_choice", "question": "أي موقع أثري في الأردن يعود للعصر الحجري الحديث ويشتهر بالتماثيل العينية؟", "options": ["عين غزال", "جاوا", "الجاوا", "أم قيس"], "answer": "عين غزال"},
-                                {"type": "ordering", "question": "رتب العصور الحجرية من الأقدم للأحدث:", "items": ["الحجري الحديث", "الحجري القديم", "الحجري الوسيط"], "answer": ["الحجري القديم", "الحجري الوسيط", "الحجري الحديث"]},
-                            ] },
-                            { "title": "الأردن في العصر الحديدي", "questions": [] }, { "title": "مملكة الأنباط", "questions": [] }, { "title": "مظاهر الحضارة اليونانية في الأردن", "questions": [] }, { "title": "مظاهر الحضارة الرومانية-البيزنطية في الأردن", "questions": [] } ] },
-                        { "title": "الأردن في صدر الإسلام", "lessons": [ { "title": "الأردن في صدر الإسلام", "questions": [] }, { "title": "الأردن في العصر الأموي", "questions": [] }, { "title": "الأردن في العصر العباسي", "questions": [] }, { "title": "الأردن خلال حملات الفرنجة", "questions": [] }, { "title": "الأردن في العصر الأيوبي", "questions": [] }, { "title": "الأردن في العصر المملوكي", "questions": [] } ] },
-                        { "title": "الأردن في العصر الحديث", "lessons": [ { "title": "الأوضاع السياسية والإدارية في الأردن في العهد العثماني", "questions": [] }, { "title": "الأوضاع الإجتماعية والإقتصادية الأردن في العهد العثماني", "questions": [] }, { "title": "الثورة العربية الكبرى", "questions": [] }, { "title": "الأردن في عهد المملكة العربية السورية والحكومات المحلية", "questions": [] } ] }
-                    ]
-                },
-                "second": { "title": "الفصل الثاني", "units": [ { "title": "الحياة السياسية في الأردن", "lessons": [ { "title": "تأسيس الإمارة الأردنية", "questions": [] }, { "title": "استقلال المملكة الأردنية الهاشمية", "questions": [] }, { "title": "تطور الحياة السياسية في الأردن بين عامي (1948-1957)", "questions": [] }, { "title": "تطور الحياة السياسية في الأردن بين عامي (1958-1999)", "questions": [] }, { "title": "الحياة السياسية في الأردن منذ 1999", "questions": [] }, { "title": "الأردن والعلاقات العربية والدولية", "questions": [] }, { "title": "القوات المسلحة الأردنية - الجيش العربي", "questions": [] }, { "title": "الأجهزة الأمنية الأردنية", "questions": [] } ] }, { "title": "الحياة الاقتصادية في الأردن", "lessons": [ { "title": "الحياة الاقتصادية في الأردن بين عامي (1921-1950)", "questions": [] }, { "title": "الحياة الاقتصادية في الأردن بين عامي (1951-1967)", "questions": [] }, { "title": "الحياة الاقتصادية في الأردن بين عامي (1968-1999)", "questions": [] }, { "title": "الحياة الاقتصادية في الأردن منذ عام 1999", "questions": [] } ] }, { "title": "الحياة الاجتماعية في الأردن", "lessons": [ { "title": "الحياة الاجتماعية في الأردن بين عامي (1921-1950)", "questions": [] }, { "title": "الحياة الاجتماعية في الأردن بين عامي (1951-1999)", "questions": [] }, { "title": "الحياة الاجتماعية في الأردن منذ عام 1999", "questions": [] } ] }, { "title": "التعليم والثقافة في الأردن", "lessons": [ { "title": "التعليم العام في الأردن بين عامي (1921-1950)", "questions": [] }, { "title": "التعليم العام في الأردن بين عامي (1951-1987)", "questions": [] }, { "title": "التعليم العام في الأردن بين عامي (1988-2024)", "questions": [] }, { "title": "التعليم العالي والبحث العلمي في الأردن منذ عام 1951", "questions": [] }, { "title": "الحياة الثقافية في الأردن في عهد الإمارة", "questions": [] }, { "title": "الحياة الثقافية في الأردن منذ عام 1946", "questions": [] } ] }, { "title": "الأردن والقضية الفلسطينية", "lessons": [ { "title": "موقف الأردن من القضية الفلسطينية بين عامي (1916-1951)", "questions": [] }, { "title": "موقف الأردن من القضية الفلسطينية منذ عام 1951", "questions": [] }, { "title": "الوصاية والإعمار الهاشمي للمقدسات الدينية في القدس", "questions": [] } ] } ] }
-            },
-             "دين": {
-                "first": {
-                    "title": "الفصل الأول",
-                    "units": [
-                         { "title": "الوحدة الأولى", "lessons": [
-                             { "title": "سورة آل عمران (102-105)", "questions": [
-                                 {"type": "multiple_choice", "question": "ما هو الأمر الذي نهى الله عنه في قوله تعالى 'ولا تفرقوا'؟", "options": ["التعصب", "الخلاف المذموم المؤدي للعداوة", "الاختلاف في الرأي الفقهي", "ترك الصلاة"], "answer": "الخلاف المذموم المؤدي للعداوة"},
-                                 {"type": "multiple_choice", "question": "ما المقصود بـ 'حبل الله' في الآية؟", "options": ["القرآن والسنة", "الصلاة", "الزكاة", "الحج"], "answer": "القرآن والسنة"}
-                             ] },
-                             { "title": "حديث اتقاء الشبهات", "questions": [] }, { "title": "من صور الضلال", "questions": [] }, { "title": "كرامة الإنسان في الشريعة", "questions": [] }, { "title": "الزواج-مشروعيته ومقدماته", "questions": [] }, { "title": "الجهاد في الإسلام", "questions": [] } ] },
-                         { "title": "الوحدة الثانية", "lessons": [ { "title": "جهود علماء المسلمين في خدمة القرآن", "questions": [] }, { "title": "العزيمة والرخصة", "questions": [] }, { "title": "معركة مؤتة (8 هجري)", "questions": [] }, { "title": "المحرمات من النساء", "questions": [] }, { "title": "التعايش الإنساني", "questions": [] }, { "title": "الحقوق الإجتماعية للمرأة في الإسلام", "questions": [] } ] },
-                         { "title": "الوحدة الثالثة", "lessons": [ { "title": "سورة آل عمران (169-174)", "questions": [] }, { "title": "حديث - رضا الله تعالى", "questions": [] }, { "title": "فتح مكة (8 هجري)", "questions": [] }, { "title": "من خصائص الشريعة - الإيجابية", "questions": [] }, { "title": "شروط صحة عقد الزواج", "questions": [] }, { "title": "الحقوق المالية للمرأة في الإسلام", "questions": [] } ] },
-                         { "title": "الوحدة الرابعة", "lessons": [ { "title": "سورة الروم (21-24)", "questions": [] }, { "title": "مكانة السنة النبوية في التشريع", "questions": [] }, { "title": "مراعاة الأعراف في الشريعة", "questions": [] }, { "title": "حقوق الزوجين", "questions": [] }, { "title": "تنظيم النسل وتحديده", "questions": [] }, { "title": "الأمن الغذائي في الإسلام", "questions": [] }, { "title": "الإسلام والوحدة الوطنية", "questions": [] } ] }
-                    ]
-                },
-                "second": { "title": "الفصل الثاني", "units": [ { "title": "الوحدة الأولى", "lessons": [ { "title": "سورة البقرة (284-286)", "questions": [] }, { "title": "دلائل وجود الله تعالى", "questions": [] }, { "title": "إعجاز القرآن الكريم", "questions": [] }, { "title": "الأمر بالمعروف والنهي عن المنكر", "questions": [] }, { "title": "اليوم الآخر - احداثه وآثار الإيمان به", "questions": [] }, { "title": "الإجتهاد في الإسلام", "questions": [] } ] }, { "title": "الوحدة الثانية", "lessons": [ { "title": "سورة الأعراف (31-34)", "questions": [] }, { "title": "مراعاة المصالح في الشريعة", "questions": [] }, { "title": "جهود علماء المسلمين في الحفاظ على السنة النبوية", "questions": [] }, { "title": "حديث - منهج الإسلام في الحياة", "questions": [] }, { "title": "رسائل النبي الى الملوك والزعماء في عصره", "questions": [] }, { "title": "يوم تبوك (9 هجري)", "questions": [] }, { "title": "الحقوق السياسية للمرأة في الإسلام", "questions": [] } ] }, { "title": "الوحدة الثالثة", "lessons": [ { "title": "سورة الفرقان (63-77)", "questions": [] }, { "title": "الطلاق", "questions": [] }, { "title": "العدة", "questions": [] }, { "title": "الوصية في الشريعة", "questions": [] }, { "title": "الميراث في الشريعة", "questions": [] }, { "title": "من خصائص الشريعة - الوسطية", "questions": [] }, { "title": "مجالات الوقف ودورها في التنمية", "questions": [] } ] }, { "title": "الوحدة الرابعة", "lessons": [ { "title": "حديث - مفهوم الإفلاس بين الدنيا والآخرة", "questions": [] }, { "title": "مقاصد الشريعة", "questions": [] }, { "title": "منهج الإسلام في مكافحة الجريمة", "questions": [] }, { "title": "من وصايا النبي في حجة الوداع", "questions": [] }, { "title": "المسؤولية المجتمعية في الإسلام", "questions": [] }, { "title": "حقوق الإنسان بين الإسلام والإعلان العالمي لحقوق الإنسان", "questions": [] } ] } ] }
-            }
+        const topicsData = { // Added Placeholder Qs
+            "english": { "first": { "title": "First Semester", "units": [ { "title": "Unit 1", "lessons": [ { "title": "Vocabulary & Grammar Basics", "questions": [ { "type": "multiple_choice", "question": "Device in 'curtain of night fell'?", "options": ["Simile", "Metaphor", "Alliteration", "Hyperbole"], "answer": "Metaphor" }, { "type": "multiple_choice", "question": "'Ambiguous' means:", "options": ["Clear", "Uncertain", "Definite", "Determined"], "answer": "Uncertain" }, { "type": "ordering", "question": "Order alphabetically:", "items": ["Banana", "Apple", "Cherry", "Date", "Fig"], "answer": ["Apple", "Banana", "Cherry", "Date", "Fig"] }, { "type": "matching", "question": "Match country and capital:", "prompts": ["France", "Japan", "Egypt", "Brazil", "Canada"], "matches": ["Cairo", "Tokyo", "Paris", "Brasília", "Ottawa"], "answer": { "0": 2, "1": 1, "2": 0, "3": 3, "4": 4 } }, { "type": "ordering", "question": "Order tea steps:", "items": ["Add tea bag", "Boil water", "Pour water"], "answer": ["Boil water", "Add tea bag", "Pour water"] } ] }, { "title": "Past & Present Tenses & Question Tags", "questions": [ { "type": "multiple_choice", "question": "Correct tense: 'She ___ school.'", "options": ["go", "goes", "going", "went"], "answer": "goes" }, { "type": "multiple_choice", "question": "Correct tag: 'You're coming, ___?'", "options": ["aren't you", "don't you", "isn't you", "won't you"], "answer": "aren't you" } ] } ] }, { "title": "Unit 2", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "Future Forms", "questions": [] } ] }, { "title": "Unit 3", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "Habits & Clauses", "questions": [] } ] }, { "title": "Unit 4", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "Narration & Inversion", "questions": [] } ] } ] }, "second": { "title": "Second Semester", "units": [ { "title": "Unit 1", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "Modal & Related & Articles", "questions": [] } ] }, { "title": "Unit 2", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "Reported Speech & Reporting Verbs", "questions": [] } ] }, { "title": "Unit 3", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "The Passive", "questions": [] } ] }, { "title": "Unit 4", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "Conditionals & Modals", "questions": [] } ] }, { "title": "Unit 5", "lessons": [ { "title": "Reading and Vocabulary", "questions": [] }, { "title": "Modals & Clauses", "questions": [] } ] } ] } },
+            "اللغة العربية": { "first": { "title": "الفصل الأول", "units": [ { "title": "الوحدة الأولى", "lessons": [ { "title": "من القيم الإنسانية في القرآن", "questions": [ {"type": "multiple_choice", "question": "ما معنى كلمة 'البر' في قوله تعالى 'لن تنالوا البر حتى تنفقوا مما تحبون'؟", "options": ["الخير", "الصدق", "العدل", "الوفاء"], "answer": "الخير"}, {"type": "ordering", "question": "رتب مراحل الوحي حسب نزولها:", "items": ["اقرأ باسم ربك", "المدثر", "الفاتحة"], "answer": ["اقرأ باسم ربك", "المدثر", "الفاتحة"]}, {"type": "matching", "question": "صل بين المصطلح وتعريفه:", "prompts": ["التجويد", "التفسير", "الناسخ والمنسوخ"], "matches": ["علم كيفية النطق الصحيح للقرآن", "علم بيان معاني القرآن", "علم الآيات التي تغير حكمها"], "answer": {"0": 0, "1": 1, "2": 2}} ] }, { "title": "اسلوب الطلب وجوابه المجزوم والتشبيه المفرد", "questions": [] } ] }, { "title": "الوحدة الثانية", "lessons": [ { "title": "عمانيات", "questions": [] }, { "title": "صور الفاعل والتشبيه التمثيلي", "questions": [] } ] }, { "title": "الوحدة الثالثة", "lessons": [ { "title": "الزهايمر-الخرف المبكر", "questions": [] }, { "title": "صور المبتدأ والخبر والجملة الخبرية والإنشائية", "questions": [] } ] }, { "title": "الوحدة الرابعة", "lessons": [ { "title": "الإعلام ومشروع النهوض باللغة العربية", "questions": [] }, { "title": "المفعول معه والأمر", "questions": [] } ] }, { "title": "الوحدة الخامسة", "lessons": [ { "title": "التعليم التقني بوابة المستقبل في عالم متغير", "questions": [] }, { "title": "انواع ما والإستفهام", "questions": [] } ] } ] }, "second": { "title": "الفصل الثاني", "units": [ { "title": "الوحدة الأولى", "lessons": [ { "title": "في فتح القدس", "questions": [] }, { "title": "معاني حروف الجر والتشخيص", "questions": [] } ] }, { "title": "الوحدة الثانية", "lessons": [ { "title": "قصة-حفنة تمر", "questions": [] }, { "title": "اسم الفاعل واسم المفعول والطباق والمقابلة", "questions": [] } ] }, { "title": "الوحدة الثالثة", "lessons": [ { "title": "شاعرات من بلدي", "questions": [] }, { "title": "اسم الزمان واسم المكان وجمع التكسير (القلة والكثرة)", "questions": [] } ] }, { "title": "الوحدة الرابعة", "lessons": [ { "title": "من مقامات بديع الزمان الهمذاني", "questions": [] }, { "title": "مصدر المرة ومصدر الهيئة والبحر المتدارك", "questions": [] } ] }, { "title": "الوحدة الخامسة", "lessons": [ { "title": "الذكاء الاصطناعي-عالم جديد", "questions": [] }, { "title": "اسم الآلة", "questions": [] } ] } ] } },
+             "التاريخ": { "first": { "title": "الفصل الأول", "units": [ { "title": "الأردن في العصور القديمة", "lessons": [ { "title": "الأردن في العصور الحجرية", "questions": [ {"type": "multiple_choice", "question": "أي موقع أثري في الأردن يعود للعصر الحجري الحديث ويشتهر بالتماثيل العينية؟", "options": ["عين غزال", "جاوا", "بيضا", "أم قيس"], "answer": "عين غزال"}, {"type": "ordering", "question": "رتب العصور الحجرية من الأقدم للأحدث:", "items": ["الحجري الحديث", "الحجري القديم", "الحجري الوسيط"], "answer": ["الحجري القديم", "الحجري الوسيط", "الحجري الحديث"]}, ] }, { "title": "الأردن في العصر الحديدي", "questions": [] }, { "title": "مملكة الأنباط", "questions": [] }, { "title": "مظاهر الحضارة اليونانية في الأردن", "questions": [] }, { "title": "مظاهر الحضارة الرومانية-البيزنطية في الأردن", "questions": [] } ] }, { "title": "الأردن في صدر الإسلام", "lessons": [ { "title": "الأردن في صدر الإسلام", "questions": [] }, { "title": "الأردن في العصر الأموي", "questions": [] }, { "title": "الأردن في العصر العباسي", "questions": [] }, { "title": "الأردن خلال حملات الفرنجة", "questions": [] }, { "title": "الأردن في العصر الأيوبي", "questions": [] }, { "title": "الأردن في العصر المملوكي", "questions": [] } ] }, { "title": "الأردن في العصر الحديث", "lessons": [ { "title": "الأوضاع السياسية والإدارية في الأردن في العهد العثماني", "questions": [] }, { "title": "الأوضاع الإجتماعية والإقتصادية الأردن في العهد العثماني", "questions": [] }, { "title": "الثورة العربية الكبرى", "questions": [] }, { "title": "الأردن في عهد المملكة العربية السورية والحكومات المحلية", "questions": [] } ] } ] }, "second": { "title": "الفصل الثاني", "units": [ { "title": "الحياة السياسية في الأردن", "lessons": [ { "title": "تأسيس الإمارة الأردنية", "questions": [] }, { "title": "استقلال المملكة الأردنية الهاشمية", "questions": [] }, { "title": "تطور الحياة السياسية في الأردن بين عامي (1948-1957)", "questions": [] }, { "title": "تطور الحياة السياسية في الأردن بين عامي (1958-1999)", "questions": [] }, { "title": "الحياة السياسية في الأردن منذ 1999", "questions": [] }, { "title": "الأردن والعلاقات العربية والدولية", "questions": [] }, { "title": "القوات المسلحة الأردنية - الجيش العربي", "questions": [] }, { "title": "الأجهزة الأمنية الأردنية", "questions": [] } ] }, { "title": "الحياة الاقتصادية في الأردن", "lessons": [ { "title": "الحياة الاقتصادية في الأردن بين عامي (1921-1950)", "questions": [] }, { "title": "الحياة الاقتصادية في الأردن بين عامي (1951-1967)", "questions": [] }, { "title": "الحياة الاقتصادية في الأردن بين عامي (1968-1999)", "questions": [] }, { "title": "الحياة الاقتصادية في الأردن منذ عام 1999", "questions": [] } ] }, { "title": "الحياة الاجتماعية في الأردن", "lessons": [ { "title": "الحياة الاجتماعية في الأردن بين عامي (1921-1950)", "questions": [] }, { "title": "الحياة الاجتماعية في الأردن بين عامي (1951-1999)", "questions": [] }, { "title": "الحياة الاجتماعية في الأردن منذ عام 1999", "questions": [] } ] }, { "title": "التعليم والثقافة في الأردن", "lessons": [ { "title": "التعليم العام في الأردن بين عامي (1921-1950)", "questions": [] }, { "title": "التعليم العام في الأردن بين عامي (1951-1987)", "questions": [] }, { "title": "التعليم العام في الأردن بين عامي (1988-2024)", "questions": [] }, { "title": "التعليم العالي والبحث العلمي في الأردن منذ عام 1951", "questions": [] }, { "title": "الحياة الثقافية في الأردن في عهد الإمارة", "questions": [] }, { "title": "الحياة الثقافية في الأردن منذ عام 1946", "questions": [] } ] }, { "title": "الأردن والقضية الفلسطينية", "lessons": [ { "title": "موقف الأردن من القضية الفلسطينية بين عامي (1916-1951)", "questions": [] }, { "title": "موقف الأردن من القضية الفلسطينية منذ عام 1951", "questions": [] }, { "title": "الوصاية والإعمار الهاشمي للمقدسات الدينية في القدس", "questions": [] } ] } ] } },
+             "دين": { "first": { "title": "الفصل الأول", "units": [ { "title": "الوحدة الأولى", "lessons": [ { "title": "سورة آل عمران (102-105)", "questions": [ {"type": "multiple_choice", "question": "ما هو الأمر الذي نهى الله عنه في قوله تعالى 'ولا تفرقوا'؟", "options": ["التعصب", "الخلاف المذموم المؤدي للعداوة", "الاختلاف الفقهي", "ترك الصلاة"], "answer": "الخلاف المذموم المؤدي للعداوة"}, {"type": "multiple_choice", "question": "ما المقصود بـ 'حبل الله' في الآية؟", "options": ["القرآن والسنة", "الصلاة", "الزكاة", "الحج"], "answer": "القرآن والسنة"} ] }, { "title": "حديث اتقاء الشبهات", "questions": [] }, { "title": "من صور الضلال", "questions": [] }, { "title": "كرامة الإنسان في الشريعة", "questions": [] }, { "title": "الزواج-مشروعيته ومقدماته", "questions": [] }, { "title": "الجهاد في الإسلام", "questions": [] } ] }, { "title": "الوحدة الثانية", "lessons": [ { "title": "جهود علماء المسلمين في خدمة القرآن", "questions": [] }, { "title": "العزيمة والرخصة", "questions": [] }, { "title": "معركة مؤتة (8 هجري)", "questions": [] }, { "title": "المحرمات من النساء", "questions": [] }, { "title": "التعايش الإنساني", "questions": [] }, { "title": "الحقوق الإجتماعية للمرأة في الإسلام", "questions": [] } ] }, { "title": "الوحدة الثالثة", "lessons": [ { "title": "سورة آل عمران (169-174)", "questions": [] }, { "title": "حديث - رضا الله تعالى", "questions": [] }, { "title": "فتح مكة (8 هجري)", "questions": [] }, { "title": "من خصائص الشريعة - الإيجابية", "questions": [] }, { "title": "شروط صحة عقد الزواج", "questions": [] }, { "title": "الحقوق المالية للمرأة في الإسلام", "questions": [] } ] }, { "title": "الوحدة الرابعة", "lessons": [ { "title": "سورة الروم (21-24)", "questions": [] }, { "title": "مكانة السنة النبوية في التشريع", "questions": [] }, { "title": "مراعاة الأعراف في الشريعة", "questions": [] }, { "title": "حقوق الزوجين", "questions": [] }, { "title": "تنظيم النسل وتحديده", "questions": [] }, { "title": "الأمن الغذائي في الإسلام", "questions": [] }, { "title": "الإسلام والوحدة الوطنية", "questions": [] } ] } ] }, "second": { "title": "الفصل الثاني", "units": [ { "title": "الوحدة الأولى", "lessons": [ { "title": "سورة البقرة (284-286)", "questions": [] }, { "title": "دلائل وجود الله تعالى", "questions": [] }, { "title": "إعجاز القرآن الكريم", "questions": [] }, { "title": "الأمر بالمعروف والنهي عن المنكر", "questions": [] }, { "title": "اليوم الآخر - احداثه وآثار الإيمان به", "questions": [] }, { "title": "الإجتهاد في الإسلام", "questions": [] } ] }, { "title": "الوحدة الثانية", "lessons": [ { "title": "سورة الأعراف (31-34)", "questions": [] }, { "title": "مراعاة المصالح في الشريعة", "questions": [] }, { "title": "جهود علماء المسلمين في الحفاظ على السنة النبوية", "questions": [] }, { "title": "حديث - منهج الإسلام في الحياة", "questions": [] }, { "title": "رسائل النبي الى الملوك والزعماء في عصره", "questions": [] }, { "title": "يوم تبوك (9 هجري)", "questions": [] }, { "title": "الحقوق السياسية للمرأة في الإسلام", "questions": [] } ] }, { "title": "الوحدة الثالثة", "lessons": [ { "title": "سورة الفرقان (63-77)", "questions": [] }, { "title": "الطلاق", "questions": [] }, { "title": "العدة", "questions": [] }, { "title": "الوصية في الشريعة", "questions": [] }, { "title": "الميراث في الشريعة", "questions": [] }, { "title": "من خصائص الشريعة - الوسطية", "questions": [] }, { "title": "مجالات الوقف ودورها في التنمية", "questions": [] } ] }, { "title": "الوحدة الرابعة", "lessons": [ { "title": "حديث - مفهوم الإفلاس بين الدنيا والآخرة", "questions": [] }, { "title": "مقاصد الشريعة", "questions": [] }, { "title": "منهج الإسلام في مكافحة الجريمة", "questions": [] }, { "title": "من وصايا النبي في حجة الوداع", "questions": [] }, { "title": "المسؤولية المجتمعية في الإسلام", "questions": [] }, { "title": "حقوق الإنسان بين الإسلام والإعلان العالمي لحقوق الإنسان", "questions": [] } ] } ] } }
         };
 
         function generateSemesterContent(subject, semester) {
@@ -470,47 +399,33 @@
         let allLessonStats = {};
 
         const LS_THEME_KEY = 'quizAppTheme'; const LS_VISITED_KEY = 'quizAppVisited'; const LS_STATS_KEY = 'quizAppLessonStats';
-        const RTL_SUBJECTS = ["اللغة العربية", "دين", "التاريخ"];
+        const RTL_SUBJECTS = ["اللغة العربية", "دين", "التاريخ"]; // <-- Define RTL subjects
 
         // --- UI String Translations ---
         const uiStrings = {
             en: {
-                // Nav
                 firstSemester: "First Semester", secondSemester: "Second Semester",
-                // Quiz Header
-                backToTopics: "Back to Topics",
-                // Quiz Buttons
-                submit: "Submit", next: "Next Question", viewResults: "View Results",
-                // Results Details
-                resultsSubjectLabel: "Subject:", resultsSemesterLabel: "Semester:", resultsUnitLabel: "Unit:",
-                resultsLessonLabel: "Lesson:", resultsCorrectLabel: "Correct:", resultsTimeLabel: "Time:",
-                // Results Buttons
-                redoQuiz: "Redo Quiz", reviewAnswers: "Review Answers",
-                // Review Buttons
-                backToResults: "Back to Results",
-                // Settings Modal
-                settingsTitle: "Settings", settingsThemeHeading: "Theme", settingsLightMode: "Light Mode",
-                settingsDarkMode: "Dark Mode", settingsDataHeading: "Data Management", settingsResetBtn: "Reset Saved Data",
-                settingsResetInfo: "Clears theme, welcome status, and all saved lesson statistics.", settingsCloseBtn: "Close"
+                backToTopics: "Back to Topics", submit: "Submit", next: "Next Question",
+                viewResults: "View Results", resultsSubjectLabel: "Subject:", resultsSemesterLabel: "Semester:",
+                resultsUnitLabel: "Unit:", resultsLessonLabel: "Lesson:", resultsCorrectLabel: "Correct:",
+                resultsTimeLabel: "Time:", redoQuiz: "Redo Quiz", reviewAnswers: "Review Answers",
+                backToResults: "Back to Results", settingsTitle: "Settings", settingsThemeHeading: "Theme",
+                settingsLightMode: "Light Mode", settingsDarkMode: "Dark Mode", settingsDataHeading: "Data Management",
+                settingsResetBtn: "Reset Saved Data", settingsResetInfo: "Clears theme, welcome status, and all saved lesson statistics.",
+                settingsCloseBtn: "Close", matchingInstruction: "Click a left item, then its corresponding right item. Click a matched item again to deselect the pair.",
+                orderingInstruction: "Select the correct order number ({num}) for each item." // {num} will be replaced
             },
             ar: {
-                 // Nav
                  firstSemester: "الفصل الأول", secondSemester: "الفصل الثاني",
-                 // Quiz Header
-                 backToTopics: "العودة للمواضيع",
-                 // Quiz Buttons
-                 submit: "إرسال", next: "السؤال التالي", viewResults: "عرض النتائج",
-                 // Results Details
-                 resultsSubjectLabel: "المادة:", resultsSemesterLabel: "الفصل:", resultsUnitLabel: "الوحدة:",
-                 resultsLessonLabel: "الدرس:", resultsCorrectLabel: "الصحيحة:", resultsTimeLabel: "الوقت:",
-                 // Results Buttons
-                 redoQuiz: "إعادة الاختبار", reviewAnswers: "مراجعة الإجابات",
-                 // Review Buttons
-                 backToResults: "العودة للنتائج",
-                 // Settings Modal
-                 settingsTitle: "الإعدادات", settingsThemeHeading: "السمة", settingsLightMode: "وضع فاتح",
-                 settingsDarkMode: "وضع داكن", settingsDataHeading: "إدارة البيانات", settingsResetBtn: "إعادة تعيين البيانات",
-                 settingsResetInfo: "يمسح تفضيلات السمة وحالة شاشة الترحيب وجميع إحصائيات الدروس المحفوظة.", settingsCloseBtn: "إغلاق"
+                 backToTopics: "العودة للمواضيع", submit: "إرسال", next: "السؤال التالي",
+                 viewResults: "عرض النتائج", resultsSubjectLabel: "المادة:", resultsSemesterLabel: "الفصل:",
+                 resultsUnitLabel: "الوحدة:", resultsLessonLabel: "الدرس:", resultsCorrectLabel: "الصحيحة:",
+                 resultsTimeLabel: "الوقت:", redoQuiz: "إعادة الاختبار", reviewAnswers: "مراجعة الإجابات",
+                 backToResults: "العودة للنتائج", settingsTitle: "الإعدادات", settingsThemeHeading: "السمة",
+                 settingsLightMode: "وضع فاتح", settingsDarkMode: "وضع داكن", settingsDataHeading: "إدارة البيانات",
+                 settingsResetBtn: "إعادة تعيين البيانات", settingsResetInfo: "يمسح تفضيلات السمة وحالة شاشة الترحيب وجميع إحصائيات الدروس المحفوظة.",
+                 settingsCloseBtn: "إغلاق", matchingInstruction: "انقر على عنصر أيسر، ثم على العنصر الأيمن المقابل له. انقر على زوج متطابق لإلغاء التحديد.",
+                 orderingInstruction: "حدد رقم الترتيب الصحيح ({num}) لكل عنصر."
             }
         };
 
@@ -530,82 +445,111 @@
 
         // --- UI Language Update ---
         function updateUiLanguage(lang = 'en') {
-            const strings = uiStrings[lang] || uiStrings.en; // Fallback to English
+            const strings = uiStrings[lang] || uiStrings.en;
+            const isRTL = lang === 'ar';
+            document.documentElement.lang = lang; // Set page language
 
-            // Helper to update text content safely
-            const setText = (elementId, text) => {
+            const setText = (elementId, textKey, options = {}) => {
                 const element = document.getElementById(elementId);
+                let text = strings[textKey] || uiStrings.en[textKey] || ''; // Fallback text
+                 // Replace placeholders like {num}
+                 if (options.num !== undefined) { text = text.replace('{num}', `1-${options.num}`); }
+
                 if (element) {
-                    // If element has a specific child span for text, update that
-                    const textSpan = element.querySelector('.btn-text');
+                    const textSpan = element.querySelector('.btn-text'); // Check for inner span
+                    const iconSpan = element.querySelector('span:not(.btn-text)'); // Check for icon span
                     if (textSpan) {
                         textSpan.textContent = text;
+                        // Optionally adjust icon position if needed, though CSS should handle it mostly
+                        if(iconSpan) {
+                            element.style.flexDirection = isRTL ? 'row-reverse' : 'row';
+                        }
                     } else {
-                        element.textContent = text;
+                        element.textContent = text; // Set text directly if no span
                     }
-                } else {
-                    // console.warn(`UI Element not found for translation: #${elementId}`);
+                } else if (options.selector) { // Allow using selectors
+                     const elements = document.querySelectorAll(options.selector);
+                     elements.forEach(el => { el.textContent = text; });
                 }
             };
-             // Helper for results details labels (which don't have IDs)
-             const setDetailLabel = (key, text) => {
-                const pElement = document.querySelector(`.results-details p[data-detail-key="${key}"] strong`);
-                 if (pElement) {
-                     pElement.textContent = text;
-                 }
+             const setDetailLabel = (key, textKey) => {
+                 const text = strings[textKey] || uiStrings.en[textKey] || '';
+                 const pElement = document.querySelector(`.results-details p[data-detail-key="${key}"] strong`);
+                 if (pElement) pElement.textContent = text;
              };
 
-            // Update elements by ID
-            setText('semester-btn-first', strings.firstSemester);
-            setText('semester-btn-second', strings.secondSemester);
-            setText('back-to-topics-btn', strings.backToTopics); // Handles span inside
-            setText('settings-close-btn', strings.settingsCloseBtn);
-            setText('reset-data-button', strings.settingsResetBtn);
+            // Update static elements
+            setText('semester-btn-first', 'firstSemester');
+            setText('semester-btn-second', 'secondSemester');
+            setText('settings-close-btn', 'settingsCloseBtn');
+            setText('reset-data-button', 'settingsResetBtn');
 
-            // Update elements that might be dynamically generated (need to check existence)
-            setText('submit-btn', strings.submit); // In quiz view
+            // Update elements that might exist depending on the view
+            // Quiz Header Back Button
+            setText('back-to-topics-btn', 'backToTopics');
+            // Quiz Buttons (Submit/Next/Results)
+            setText('submit-btn', 'submit');
             const nextBtn = document.getElementById('next-btn');
             if (nextBtn) {
-                 nextBtn.textContent = (quizState.currentQuestionIndex === quizState.totalQuestions - 1) ? strings.viewResults : strings.next;
+                 const nextBtnTextKey = (quizState.currentQuestionIndex === quizState.totalQuestions - 1 && quizState.totalQuestions > 0) ? 'viewResults' : 'next';
+                 setText('next-btn', nextBtnTextKey);
             }
-            setText('redo-btn', strings.redoQuiz); // In results view
-            setText('review-btn', strings.reviewAnswers); // In results view
-            setText('back-btn', strings.backToResults); // In review view
+            // Results Buttons
+            setText('redo-btn', 'redoQuiz');
+            setText('review-btn', 'reviewAnswers');
+            setText('back-to-topics-btn-results', 'backToTopics'); // Target specific results button
+            // Review Buttons
+            setText('back-btn', 'backToResults');
+            setText('back-to-topics-btn-review', 'backToTopics'); // Target specific review button
+             // Error Button
+             setText('back-to-topics-btn-error', 'backToTopics'); // Target specific error button
 
-            // Update Modal text (using querySelector for elements without specific IDs)
+
+            // Update Modal text
             const modal = document.getElementById('settings-modal');
             if(modal) {
-                const title = modal.querySelector('.modal-title'); if(title) title.textContent = strings.settingsTitle;
-                const themeH = modal.querySelector('.modal-section:nth-child(1) h4'); if(themeH) themeH.textContent = strings.settingsThemeHeading;
+                setText('settings-modal .modal-title', 'settingsTitle', { selector: '#settings-modal .modal-title' });
+                setText('settings-modal .modal-section:nth-of-type(1) h4', 'settingsThemeHeading', { selector: '#settings-modal .modal-section:nth-of-type(1) h4' });
                 const lightLabel = modal.querySelector('input[value="light"]')?.parentElement; if(lightLabel) lightLabel.childNodes[lightLabel.childNodes.length-1].nodeValue = ` ${strings.settingsLightMode} ☀️`;
                 const darkLabel = modal.querySelector('input[value="dark"]')?.parentElement; if(darkLabel) darkLabel.childNodes[darkLabel.childNodes.length-1].nodeValue = ` ${strings.settingsDarkMode} 🌙`;
-                const dataH = modal.querySelector('.modal-section:nth-child(2) h4'); if(dataH) dataH.textContent = strings.settingsDataHeading;
-                const resetInfo = modal.querySelector('.modal-section:nth-child(2) p'); if(resetInfo) resetInfo.textContent = strings.settingsResetInfo;
+                setText('settings-modal .modal-section:nth-of-type(2) h4', 'settingsDataHeading', { selector: '#settings-modal .modal-section:nth-of-type(2) h4' });
+                setText('settings-modal .modal-section:nth-of-type(2) p', 'settingsResetInfo', { selector: '#settings-modal .modal-section:nth-of-type(2) p' });
             }
 
-             // Update Results Details Labels (Add data-detail-key in displayResults)
-             setDetailLabel('subject', strings.resultsSubjectLabel);
-             setDetailLabel('semester', strings.resultsSemesterLabel);
-             setDetailLabel('unit', strings.resultsUnitLabel);
-             setDetailLabel('lesson', strings.resultsLessonLabel);
-             setDetailLabel('correct', strings.resultsCorrectLabel);
-             setDetailLabel('time', strings.resultsTimeLabel);
+             // Update Results Details Labels
+             setDetailLabel('subject', 'resultsSubjectLabel');
+             setDetailLabel('semester', 'resultsSemesterLabel');
+             setDetailLabel('unit', 'resultsUnitLabel');
+             setDetailLabel('lesson', 'resultsLessonLabel');
+             setDetailLabel('correct', 'resultsCorrectLabel');
+             setDetailLabel('time', 'resultsTimeLabel');
 
+             // Update Instructions (if quiz view is active)
+             const matchingInstructions = document.querySelector('.matching-instructions');
+             if(matchingInstructions) matchingInstructions.textContent = strings.matchingInstruction;
+
+             const orderingInstructions = document.querySelector('.ordering-instructions');
+             if(orderingInstructions) {
+                 const num = quizState?.questions[quizState.currentQuestionIndex]?.items?.length || 0;
+                 orderingInstructions.textContent = strings.orderingInstruction.replace('{num}', `1-${num}`);
+             }
         }
 
 
         // --- RTL and Theme Management ---
         function setRtlLayout(enable) {
             if (mainContainerElement) {
+                const lang = enable ? 'ar' : 'en';
                 mainContainerElement.classList.toggle('rtl-layout', enable);
-                updateUiLanguage(enable ? 'ar' : 'en'); // <-- Update language based on RTL state
+                document.documentElement.lang = lang; // Set lang attribute on <html>
+                updateUiLanguage(lang); // Update UI text
             }
         }
         function applyTheme(t){document.body.classList.toggle('dark-theme',t==='dark');const r=settingsModalElement?.querySelectorAll('input[name="theme"]');if(r)r.forEach(rd=>rd.checked=rd.value===t);}
         function handleThemeChange(e){const n=e.target.value;applyTheme(n);localStorage.setItem(LS_THEME_KEY,n);}
         function loadAndApplyTheme(){const s=localStorage.getItem(LS_THEME_KEY);const c=s||'dark';applyTheme(c);if(!s)localStorage.setItem(LS_THEME_KEY,'dark');}
         function toggleSettingsModal(s){if(!settingsModalElement)return;if(s){const c=localStorage.getItem(LS_THEME_KEY)||'dark';const r=settingsModalElement.querySelectorAll('input[name="theme"]');r.forEach(rd=>rd.checked=rd.value===c);settingsModalElement.classList.remove('hidden');setTimeout(()=>settingsModalElement.classList.add('visible'),10);}else{settingsModalElement.classList.remove('visible');setTimeout(()=>settingsModalElement.classList.add('hidden'),300);}}
-        function resetSavedData(){if(confirm(uiStrings[document.documentElement.lang === 'ar' ? 'ar' : 'en'].settingsResetInfo + '\n\nConfirm Reset? / تأكيد إعادة التعيين؟')){localStorage.removeItem(LS_THEME_KEY);localStorage.removeItem(LS_VISITED_KEY);localStorage.removeItem(LS_STATS_KEY);allLessonStats={};alert('Data reset. Reloading.');location.reload();}}
+        function resetSavedData(){const currentLang=document.documentElement.lang||'en'; const confirmMsg=uiStrings[currentLang]?.settingsResetInfo+'\n\nConfirm Reset? / تأكيد إعادة التعيين؟';if(confirm(confirmMsg)){localStorage.removeItem(LS_THEME_KEY);localStorage.removeItem(LS_VISITED_KEY);localStorage.removeItem(LS_STATS_KEY);allLessonStats={};alert('Data reset. Reloading.');location.reload();}}
 
         // --- Welcome Screen Logic ---
         function handleWelcome(){if(!welcomeViewElement||!mainContainerElement)return;const h=localStorage.getItem(LS_VISITED_KEY);if(h){welcomeViewElement.classList.add('hidden');mainContainerElement.classList.remove('initially-hidden');setTimeout(()=>{mainContainerElement.style.opacity=1;},50);}else{welcomeViewElement.classList.remove('hidden');mainContainerElement.classList.add('initially-hidden');mainContainerElement.style.opacity=0;const b=welcomeViewElement.querySelector('.get-started-btn');if(b)b.addEventListener('click',()=>{localStorage.setItem(LS_VISITED_KEY,'true');welcomeViewElement.classList.add('hidden');mainContainerElement.classList.remove('initially-hidden');setTimeout(()=>{mainContainerElement.style.opacity=1;},50);},{once:true});}}
@@ -616,9 +560,14 @@
             welcomeViewElement=document.getElementById('welcome-view');mainContainerElement=document.querySelector('.container');contentElement=document.getElementById('content');quizViewElement=document.getElementById('quiz-view');quizTitleElement=document.getElementById('quiz-title');quizContainerElement=document.getElementById('quiz-container');feedbackContainerElement=document.getElementById('feedback-container');quizButtonsContainerElement=document.getElementById('quiz-buttons-container');navSectionElement=document.querySelector('.nav-section');settingsButtonElement=document.getElementById('settings-btn');settingsModalElement=document.getElementById('settings-modal');
             // Initial Setup
             loadAndApplyTheme();loadLessonStats();handleWelcome();
-            // Set initial UI language based on default subject
-             const initialSubject = document.querySelector('.nav-btn.active')?.dataset.subject || 'english';
-             updateUiLanguage(RTL_SUBJECTS.includes(initialSubject) ? 'ar' : 'en');
+            // Set initial UI language and RTL based on default subject
+             const initialSubjectBtn = document.querySelector('.nav-btn.active');
+             if (initialSubjectBtn) {
+                 const initialSubject = initialSubjectBtn.dataset.subject;
+                 setRtlLayout(RTL_SUBJECTS.includes(initialSubject)); // This also calls updateUiLanguage
+             } else {
+                  updateUiLanguage('en'); // Default to English if no active button found
+             }
 
             // Event Listeners
             if(settingsButtonElement)settingsButtonElement.addEventListener('click',()=>toggleSettingsModal(true));
@@ -663,40 +612,47 @@
             setRtlLayout(RTL_SUBJECTS.includes(subj)); // Set RTL for quiz
             if(quizTitleElement)quizTitleElement.textContent=lesson; displayQuestion();
         }
-
-        function displayQuestion(){ // Added IDs to dynamic buttons
+        function displayQuestion(){
             if(!quizContainerElement||!feedbackContainerElement||!quizButtonsContainerElement)return;
-            const cQ=quizState.questions[quizState.currentQuestionIndex];
-            if(!cQ){displayResults();return;}
+            const cQ=quizState.questions[quizState.currentQuestionIndex]; if(!cQ){displayResults();return;}
             quizContainerElement.innerHTML='';feedbackContainerElement.innerHTML='';feedbackContainerElement.classList.add('hidden');quizButtonsContainerElement.innerHTML='';
-            if(matchingSvgElement&&matchingSvgElement.parentNode){matchingSvgElement.remove();matchingSvgElement=null;}
-            if(matchingArrowObserver){matchingArrowObserver.disconnect();matchingArrowObserver=null;}
+            if(matchingSvgElement&&matchingSvgElement.parentNode){matchingSvgElement.remove();matchingSvgElement=null;} if(matchingArrowObserver){matchingArrowObserver.disconnect();matchingArrowObserver=null;}
             const qW=document.createElement('div');qW.className='question-display-wrapper';
             const pT=document.createElement('div');pT.className='question-progress';pT.textContent=`Q ${quizState.currentQuestionIndex+1}/${quizState.totalQuestions}`;qW.appendChild(pT);
             const qT=document.createElement('p');qT.className='question-text';qT.innerHTML=`<strong>Q:</strong> ${cQ.question||'?'}`;qW.appendChild(qT);
             const tW=document.createElement('div');tW.className='question-type-wrapper';
             try{switch(cQ.type){case"matching":renderMatching(cQ,tW);requestAnimationFrame(setupArrowObserver);break;case"ordering":renderOrdering(cQ,tW);break;case"multiple_choice":default:renderMultipleChoice(cQ,tW);break;}}catch(e){console.error("Render error:",e);tW.innerHTML=`<p style="color:red;">Err display.</p>`;}
             qW.appendChild(tW);quizContainerElement.appendChild(qW);
-            // Add IDs to buttons
-            const sB=document.createElement('button');sB.className='btn submit-btn';sB.id='submit-btn';sB.textContent=uiStrings[mainContainerElement.classList.contains('rtl-layout')?'ar':'en'].submit;sB.onclick=checkAnswer;
-            const nB=document.createElement('button');nB.className='btn next-btn hidden';nB.id='next-btn';
-            const nextBtnTextKey = quizState.currentQuestionIndex === quizState.totalQuestions - 1 ? 'viewResults' : 'next';
-            nB.textContent=uiStrings[mainContainerElement.classList.contains('rtl-layout')?'ar':'en'][nextBtnTextKey];
-            nB.onclick=nextQuestion;
+            const sB=document.createElement('button');sB.className='btn submit-btn';sB.id='submit-btn';sB.innerHTML=`<span class="btn-text"></span>`; sB.onclick=checkAnswer; // Text set by updateUiLanguage
+            const nB=document.createElement('button');nB.className='btn next-btn hidden';nB.id='next-btn';nB.innerHTML=`<span class="btn-text"></span>`; nB.onclick=nextQuestion; // Text set by updateUiLanguage
             quizButtonsContainerElement.append(sB,nB);sB.disabled=true;if(cQ.type!=='multiple_choice'&&cQ.type!=='ordering'&&cQ.type!=='matching')sB.disabled=false;
-            updateUiLanguage(mainContainerElement.classList.contains('rtl-layout')?'ar':'en'); // Ensure button text is correct
+            updateUiLanguage(mainContainerElement.classList.contains('rtl-layout')?'ar':'en'); // Set button text now
         }
 
         // --- Rendering Functions ---
         function renderMultipleChoice(q,c){if(!q.options?.length)return c.textContent='Err Opts';const oD=document.createElement('div');oD.className='options-container';q.options.forEach((o,i)=>{const id=`option-${i}`,l=document.createElement('label');l.className='option-label';l.htmlFor=id;const inp=document.createElement('input');inp.type='radio';inp.name='question-option';inp.value=i;inp.id=id;inp.className='option-input';inp.addEventListener('change',()=>{const s=document.getElementById('submit-btn');if(s)s.disabled=false;});const t=document.createElement('span');t.className='option-text';t.textContent=o;l.append(inp,t);oD.appendChild(l);});c.appendChild(oD);}
-        function renderMatching(q,c){if(!q.prompts?.length||!q.matches?.length||q.prompts.length!==q.matches.length)return c.textContent='Err Match';quizState.matchingState.userPairs={};const i=document.createElement('p');i.className='matching-instructions';i.textContent='Click L, then R. Click matched to deselect.';c.appendChild(i);const o=document.createElement('div');o.style.position='relative';matchingSvgElement=document.createElementNS('http://www.w3.org/2000/svg','svg');matchingSvgElement.id='matching-arrow-svg';matchingSvgElement.innerHTML='<defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="var(--accent-color)"/></marker></defs>';o.appendChild(matchingSvgElement);const mC=document.createElement('div');mC.className='matching-container';mC.id='matching-cols';const pC=document.createElement('div');pC.className='matching-column';pC.innerHTML='<h4>Items</h4>';const maC=document.createElement('div');maC.className='matching-column';maC.innerHTML='<h4>Matches</h4>';const sM=q.matches.map((t,ix)=>({text:t,originalIndex:ix})).sort(()=>.5-Math.random());q.prompts.forEach((pT,pI)=>{const it=document.createElement('div');it.className='matching-item prompt-item';it.textContent=pT;it.dataset.index=pI;it.id=`prompt-${pI}`;it.onclick=handleMatchingClick;pC.appendChild(it);});sM.forEach(mO=>{const it=document.createElement('div');it.className='matching-item match-item';it.textContent=mO.text;it.dataset.index=mO.originalIndex;it.id=`match-${mO.originalIndex}`;it.onclick=handleMatchingClick;maC.appendChild(it);});mC.append(pC,maC);o.appendChild(mC);c.appendChild(o);}
-        function renderOrdering(q,c){if(!q.items?.length)return c.textContent='Err Ord';const n=q.items.length,i=document.createElement('p');i.className='ordering-instructions';i.textContent=`Select order (1-${n}).`;c.appendChild(i);const oC=document.createElement('div');oC.className='ordering-container';oC.id='ordering-list';const ch=()=>{const a=oC.querySelectorAll('.ordering-select'),s=Array.from(a).every(sl=>sl.value!==""),b=document.getElementById('submit-btn');if(b)b.disabled=!s;};const sI=q.items.map((t,ix)=>({text:t,originalIndex:ix})).sort(()=>.5-Math.random());sI.forEach(({text:t,originalIndex:oI})=>{const d=document.createElement('div');d.className='ordering-item';d.dataset.originalIndex=oI;const s=document.createElement('select');s.className='ordering-select';s.dataset.itemIndex=oI;const dO=document.createElement('option');dO.value="";dO.textContent="-";dO.selected=true;dO.disabled=true;s.appendChild(dO);for(let j=1;j<=n;j++){const op=document.createElement('option');op.value=j;op.textContent=j;s.appendChild(op);}s.addEventListener('change',ch);const sp=document.createElement('span');sp.className='ordering-text';sp.textContent=t;d.append(s,sp);oC.appendChild(d);});c.appendChild(oC);}
+        function renderMatching(q,c){if(!q.prompts?.length||!q.matches?.length||q.prompts.length!==q.matches.length)return c.textContent='Err Match';quizState.matchingState.userPairs={};const i=document.createElement('p');i.className='matching-instructions'; /* Text set by updateUiLanguage */ c.appendChild(i);const o=document.createElement('div');o.style.position='relative';matchingSvgElement=document.createElementNS('http://www.w3.org/2000/svg','svg');matchingSvgElement.id='matching-arrow-svg';matchingSvgElement.innerHTML='<defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="var(--accent-color)"/></marker></defs>';o.appendChild(matchingSvgElement);const mC=document.createElement('div');mC.className='matching-container';mC.id='matching-cols';const pC=document.createElement('div');pC.className='matching-column';pC.innerHTML='<h4>Items</h4>';const maC=document.createElement('div');maC.className='matching-column';maC.innerHTML='<h4>Matches</h4>';const sM=q.matches.map((t,ix)=>({text:t,originalIndex:ix})).sort(()=>.5-Math.random());q.prompts.forEach((pT,pI)=>{const it=document.createElement('div');it.className='matching-item prompt-item';it.textContent=pT;it.dataset.index=pI;it.id=`prompt-${pI}`;it.onclick=handleMatchingClick;pC.appendChild(it);});sM.forEach(mO=>{const it=document.createElement('div');it.className='matching-item match-item';it.textContent=mO.text;it.dataset.index=mO.originalIndex;it.id=`match-${mO.originalIndex}`;it.onclick=handleMatchingClick;maC.appendChild(it);});mC.append(pC,maC);o.appendChild(mC);c.appendChild(o); updateUiLanguage(mainContainerElement.classList.contains('rtl-layout')?'ar':'en'); /* Set instruction text */ }
+        function renderOrdering(q,c){if(!q.items?.length)return c.textContent='Err Ord';const n=q.items.length,i=document.createElement('p');i.className='ordering-instructions'; /* Text set by updateUiLanguage */ c.appendChild(i);const oC=document.createElement('div');oC.className='ordering-container';oC.id='ordering-list';const ch=()=>{const a=oC.querySelectorAll('.ordering-select'),s=Array.from(a).every(sl=>sl.value!==""),b=document.getElementById('submit-btn');if(b)b.disabled=!s;};const sI=q.items.map((t,ix)=>({text:t,originalIndex:ix})).sort(()=>.5-Math.random());sI.forEach(({text:t,originalIndex:oI})=>{const d=document.createElement('div');d.className='ordering-item';d.dataset.originalIndex=oI;const s=document.createElement('select');s.className='ordering-select';s.dataset.itemIndex=oI;const dO=document.createElement('option');dO.value="";dO.textContent="-";dO.selected=true;dO.disabled=true;s.appendChild(dO);for(let j=1;j<=n;j++){const op=document.createElement('option');op.value=j;op.textContent=j;s.appendChild(op);}s.addEventListener('change',ch);const sp=document.createElement('span');sp.className='ordering-text';sp.textContent=t;d.append(s,sp);oC.appendChild(d);});c.appendChild(oC); updateUiLanguage(mainContainerElement.classList.contains('rtl-layout')?'ar':'en'); /* Set instruction text */ }
 
         // --- Interaction Handlers ---
         function handleMatchingClick(e){const cI=e.target.closest('.matching-item');if(!cI)return;const iP=cI.classList.contains('prompt-item'),iAM=cI.classList.contains('matched'),cIdx=cI.dataset.index;let sP=quizState.matchingState.selectedPromptElement;if(iAM){let pITC=-1,mITC=-1;if(iP){pITC=cIdx;mITC=quizState.matchingState.userPairs[pITC];}else{mITC=cIdx;pITC=Object.keys(quizState.matchingState.userPairs).find(p=>quizState.matchingState.userPairs[p]==mITC);}if(pITC!=-1&&mITC!==undefined){const pE=document.getElementById(`prompt-${pITC}`),mE=document.getElementById(`match-${mITC}`);if(pE){pE.classList.remove('matched','selected');pE.style.cursor='pointer';}if(mE){mE.classList.remove('matched');mE.style.cursor='pointer';}delete quizState.matchingState.userPairs[pITC];removeArrow(pITC);if(sP&&sP.dataset.index==pITC)quizState.matchingState.selectedPromptElement=null;const sB=document.getElementById('submit-btn');if(sB)sB.disabled=true;}return;}if(iP){if(cI===sP){cI.classList.remove('selected');quizState.matchingState.selectedPromptElement=null;}else{if(sP)sP.classList.remove('selected');cI.classList.add('selected');quizState.matchingState.selectedPromptElement=cI;}}else{if(sP){const pIdx=sP.dataset.index,mIdx=cIdx;quizState.matchingState.userPairs[pIdx]=parseInt(mIdx,10);sP.classList.remove('selected');sP.classList.add('matched');sP.style.cursor='pointer';cI.classList.add('matched');cI.style.cursor='pointer';drawArrow(sP,cI,pIdx);quizState.matchingState.selectedPromptElement=null;const tP=document.querySelectorAll('.prompt-item').length,mC=Object.keys(quizState.matchingState.userPairs).length,sB=document.getElementById('submit-btn');if(sB&&tP>0&&tP===mC)sB.disabled=false;}}}
 
-        // --- Arrow Drawing ---
-        function drawArrow(pE,mE,pI){if(!matchingSvgElement||!pE||!mE)return;const sR=matchingSvgElement.getBoundingClientRect(),pR=pE.getBoundingClientRect(),mR=mE.getBoundingClientRect();const isRTL = mainContainerElement.classList.contains('rtl-layout');const startX=isRTL?pR.left-sR.left:pR.right-sR.left;const startY=pR.top+pR.height/2-sR.top;const endX=isRTL?mR.right-sR.left:mR.left-sR.left;const endY=mR.top+mR.height/2-sR.top;let l=matchingSvgElement.querySelector(`#arrow-${pI}`);if(!l){l=document.createElementNS('http://www.w3.org/2000/svg','line');l.id=`arrow-${pI}`;matchingSvgElement.appendChild(l);}l.setAttribute('x1',startX);l.setAttribute('y1',startY);l.setAttribute('x2',endX);l.setAttribute('y2',endY);l.setAttribute('stroke','var(--accent-color)');l.setAttribute('stroke-width','2');l.setAttribute('marker-end','url(#arrowhead)');l.style.opacity='1';}
+        // --- Arrow Drawing (Corrected for RTL) ---
+        function drawArrow(pE,mE,pI){
+            if(!matchingSvgElement||!pE||!mE)return;
+            const sR=matchingSvgElement.getBoundingClientRect();
+            const pR=pE.getBoundingClientRect();
+            const mR=mE.getBoundingClientRect();
+            const isRTL = mainContainerElement.classList.contains('rtl-layout');
+            // LTR: Start Right -> End Left | RTL: Start Left -> End Right
+            const startX = isRTL ? pR.left - sR.left : pR.right - sR.left;
+            const startY = pR.top + pR.height/2 - sR.top;
+            const endX   = isRTL ? mR.right - sR.left : mR.left - sR.left;
+            const endY   = mR.top + mR.height/2 - sR.top;
+            let l=matchingSvgElement.querySelector(`#arrow-${pI}`); if(!l){l=document.createElementNS('http://www.w3.org/2000/svg','line');l.id=`arrow-${pI}`;matchingSvgElement.appendChild(l);}
+            l.setAttribute('x1',startX);l.setAttribute('y1',startY);l.setAttribute('x2',endX);l.setAttribute('y2',endY);
+            l.setAttribute('stroke','var(--accent-color)');l.setAttribute('stroke-width','2');l.setAttribute('marker-end','url(#arrowhead)');l.style.opacity='1';
+        }
         function removeArrow(pI){if(!matchingSvgElement)return;const l=matchingSvgElement.querySelector(`#arrow-${pI}`);if(l){l.style.opacity='0';setTimeout(()=>l.remove(),300);}}
         function updateAllArrowPositions(){if(!matchingSvgElement||!quizState||!quizState.questions[quizState.currentQuestionIndex]||quizState.questions[quizState.currentQuestionIndex].type!=='matching')return;const p=quizState.matchingState.userPairs;for(const pI in p){if(p.hasOwnProperty(pI)){const mI=p[pI],pE=document.getElementById(`prompt-${pI}`),mE=document.getElementById(`match-${mI}`);if(pE&&mE)drawArrow(pE,mE,pI);else removeArrow(pI);}}}
         function setupArrowObserver(){const t=document.getElementById('matching-cols');if(!t||!matchingSvgElement)return console.warn("Observer: Target/SVG missing.");if(matchingArrowObserver)matchingArrowObserver.disconnect();const cfg={attributes:true,childList:true,subtree:true,characterData:true},cb=debounce(updateAllArrowPositions,50);matchingArrowObserver=new MutationObserver(cb);matchingArrowObserver.observe(t,cfg);const qCT=document.getElementById('quiz-container');if(qCT)matchingArrowObserver.observe(qCT,{attributes:true,subtree:false});setTimeout(updateAllArrowPositions,100);}
@@ -710,40 +666,39 @@
 
         // --- Navigation and Results ---
         function nextQuestion(){quizState.currentQuestionIndex++;if(quizState.currentQuestionIndex<quizState.totalQuestions)displayQuestion();else{quizState.endTime=new Date();displayResults();}}
-        function displayResults(){ // Added IDs/data-keys for translation
+        function displayResults(){
             if(!quizContainerElement||!feedbackContainerElement||!quizButtonsContainerElement||!quizTitleElement)return;
             quizContainerElement.innerHTML='';feedbackContainerElement.classList.add('hidden');quizButtonsContainerElement.innerHTML='';
-            quizTitleElement.textContent='Quiz Results'; // Will be translated by updateUiLanguage if needed
+            quizTitleElement.textContent='Quiz Results'; // Base text, will be translated
             const tT=quizState.endTime&&quizState.startTime?Math.round((quizState.endTime-quizState.startTime)/1000):0;
             const tS=formatTime(tT),sc=quizState.totalQuestions>0?(quizState.correctAnswers/quizState.totalQuestions)*100:0,sR=sc.toFixed(0);
             if(quizState.totalQuestions>0)saveLessonStats(quizState.subject,quizState.semester,quizState.unit,quizState.lesson,quizState.correctAnswers,quizState.totalQuestions,tT);
             let rM='';if(quizState.totalQuestions===0)rM='No questions.';else if(sc>=90)rM='Excellent! 🎉';else if(sc>=70)rM='Great Job! 👍';else if(sc>=50)rM='Good Effort! 💪';else rM='Keep Practicing! 📚';
             const rD=document.createElement('div');rD.className='results-container';
-             // Added data-detail-key attributes for easier selection in translation
             rD.innerHTML=` <h2 class="results-header">${rM}</h2> <div class="results-score"><div class="score-circle"><span class="score-number">${sR}</span><span class="score-percent-sign">%</span></div></div> <div class="results-details"> <p data-detail-key="subject"><span class="detail-icon">📚</span><strong>Subject:</strong> <span class="detail-value">${quizState.subject||'N/A'}</span></p> <p data-detail-key="semester"><span class="detail-icon">🗓️</span><strong>Semester:</strong> <span class="detail-value">${quizState.semester||'N/A'}</span></p> <p data-detail-key="unit"><span class="detail-icon">🔖</span><strong>Unit:</strong> <span class="detail-value">${quizState.unit||'N/A'}</span></p> <p data-detail-key="lesson"><span class="detail-icon">📖</span><strong>Lesson:</strong> <span class="detail-value">${quizState.lesson||'N/A'}</span></p> <p data-detail-key="correct"><span class="detail-icon">✅</span><strong>Correct:</strong> <span class="detail-value">${quizState.correctAnswers}/${quizState.totalQuestions}</span></p> <p data-detail-key="time"><span class="detail-icon">⏱️</span><strong>Time:</strong> <span class="detail-value">${tS}</span></p> </div>`;
             quizContainerElement.appendChild(rD);
             const aD=document.createElement('div');aD.className='results-actions quiz-buttons';
-            const rB=document.createElement('button');rB.className='btn redo-btn'; rB.id='redo-btn'; rB.innerHTML=`🔄 <span class="btn-text">Redo Quiz</span>`; rB.onclick=()=>{startQuiz(quizState.subject,quizState.semester,quizState.unit,quizState.lesson,quizState.originalQuestions);};aD.appendChild(rB);
-            if(quizState.totalQuestions>0){const revB=document.createElement('button');revB.id='review-btn';revB.className='btn review-btn';revB.innerHTML=`🧐 <span class="btn-text">Review Answers</span>`;revB.onclick=reviewAnswers;aD.appendChild(revB);}
-            const bTB=document.createElement('button');bTB.className='btn back-to-topics-btn'; bTB.id='back-to-topics-btn-results'; /* Unique ID for results screen back button */ bTB.innerHTML=`<span>⬅️</span> <span class="btn-text">Back to Topics</span>`;bTB.onclick=showTopicList;aD.appendChild(bTB);
+            const rB=document.createElement('button');rB.className='btn redo-btn'; rB.id='redo-btn'; rB.innerHTML=`🔄 <span class="btn-text"></span>`; rB.onclick=()=>{startQuiz(quizState.subject,quizState.semester,quizState.unit,quizState.lesson,quizState.originalQuestions);};aD.appendChild(rB);
+            if(quizState.totalQuestions>0){const revB=document.createElement('button');revB.id='review-btn';revB.className='btn review-btn';revB.innerHTML=`🧐 <span class="btn-text"></span>`;revB.onclick=reviewAnswers;aD.appendChild(revB);}
+            const bTB=document.createElement('button');bTB.className='btn back-to-topics-btn'; bTB.id='back-to-topics-btn-results'; bTB.innerHTML=`<span>⬅️</span> <span class="btn-text"></span>`;bTB.onclick=showTopicList;aD.appendChild(bTB);
             quizButtonsContainerElement.appendChild(aD);
-            updateUiLanguage(mainContainerElement.classList.contains('rtl-layout')?'ar':'en'); // Update button/label text
+            updateUiLanguage(mainContainerElement.classList.contains('rtl-layout')?'ar':'en');
         }
 
         // --- Answer Review ---
-        function reviewAnswers(){ // Added IDs for translation
+        function reviewAnswers(){
             if(!quizContainerElement||!feedbackContainerElement||!quizButtonsContainerElement||!quizTitleElement)return;
             quizContainerElement.innerHTML='';feedbackContainerElement.classList.add('hidden');quizButtonsContainerElement.innerHTML='';
-            quizTitleElement.textContent=`Review: ${quizState.lesson}`; // Lesson title likely doesn't need translation here
+            quizTitleElement.textContent=`Review: ${quizState.lesson}`;
             const rD=document.createElement('div');rD.className='review-container';
             quizState.questions.forEach((q,i)=>{const b=document.createElement('div'),uA=quizState.selectedAnswers[i];let{correctnessClass:cC,statusText:sT}=calculateReviewStatus(q,uA);b.className=`question-review ${cC}`;const qTD=(q.type||'multiple_choice').replace('_',' ');b.innerHTML=`<div class="review-question-header"><span class="review-question-number">Q ${i+1} (${qTD})</span><span class="review-status">${sT}</span></div><p class="review-question-text">${q.question||'?'}</p><div class="review-answer-content" id="review-answer-content-${i}"></div>`;rD.appendChild(b);const cA=b.querySelector(`#review-answer-content-${i}`);if(cA){try{switch(q.type){case"matching":reviewMatchingReview(q,uA,cA);break;case"ordering":reviewOrderingReview(q,uA,cA);break;case"multiple_choice":default:reviewMultipleChoiceReview(q,uA,cA);break;}}catch(e){console.error("Review err:",e);cA.innerHTML=`<p style="color:red">Err review.</p>`;}}else console.warn(`No CA ${i}`);});
             quizContainerElement.appendChild(rD);
             const aD=document.createElement('div');aD.className='review-actions quiz-buttons';
-            const bRB=document.createElement('button');bRB.className='btn back-btn'; bRB.id = 'back-btn'; bRB.innerHTML=`<span>←</span> <span class="btn-text">Back to Results</span>`; bRB.onclick=displayResults;aD.appendChild(bRB);
-            const bTB=document.createElement('button');bTB.className='btn back-to-topics-btn'; bTB.id = 'back-to-topics-btn-review'; /* Unique ID for review screen back button */ bTB.innerHTML=`<span>⬅️</span> <span class="btn-text">Back to Topics</span>`; bTB.onclick=showTopicList;aD.appendChild(bTB);
+            const bRB=document.createElement('button');bRB.className='btn back-btn'; bRB.id = 'back-btn'; bRB.innerHTML=`<span>←</span> <span class="btn-text"></span>`; bRB.onclick=displayResults;aD.appendChild(bRB);
+            const bTB=document.createElement('button');bTB.className='btn back-to-topics-btn'; bTB.id = 'back-to-topics-btn-review'; bTB.innerHTML=`<span>⬅️</span> <span class="btn-text"></span>`; bTB.onclick=showTopicList;aD.appendChild(bTB);
             quizButtonsContainerElement.appendChild(aD);
             quizContainerElement.scrollIntoView({behavior:'smooth',block:'start'});
-             updateUiLanguage(mainContainerElement.classList.contains('rtl-layout')?'ar':'en'); // Update button text
+             updateUiLanguage(mainContainerElement.classList.contains('rtl-layout')?'ar':'en');
         }
         function calculateReviewStatus(q,uA){let cC='incorrect',sT='✗ Incorrect',iC=false,iP=false;try{switch(q.type){case"matching":const cP=q.answer||{},tCP=Object.keys(cP).length;let cMC=0;if(tCP>0&&uA&&typeof uA==='object')for(const pI in cP)if(uA.hasOwnProperty(pI)&&uA[pI]===cP[pI])cMC++;iC=tCP>0&&cMC===tCP&&Object.keys(uA||{}).length===tCP;iP=tCP>0&&cMC>0&&!iC;if(iC){cC="correct";sT="✓ Correct";}else if(iP){cC="partial";sT=`~ Part (${cMC}/${tCP})`;}break;case"ordering":if(uA&&Array.isArray(uA)&&q.answer&&Array.isArray(q.answer))iC=JSON.stringify(uA)===JSON.stringify(q.answer);if(uA===null||!Array.isArray(uA)){sT=' अधूरा';cC='incorrect';}else if(iC){cC="correct";sT="✓ Correct";}break;case"multiple_choice":default:if(uA!==null&&q.options&&q.answer)iC=q.options[uA]===q.answer;if(uA===null){sT='अनुत्तरित';cC='incorrect';}else if(iC){cC="correct";sT="✓ Correct";}break;}}catch(e){console.error("Calc Err:",e);cC='incorrect';sT='Error';}return{correctnessClass:cC,statusText:sT};}
         function reviewMultipleChoiceReview(q,uAI,c){const d=document.createElement("div");d.className="review-mc-answer";const uST=(uAI!==null&&q.options?.[uAI]!==undefined)?q.options[uAI]:"No answer";const iC=(uAI!==null&&uST===q.answer);let uAH=`<span class="user-answer-text`;if(uAI===null)uAH+=`">`;else if(iC)uAH+=` correct">`;else uAH+=` incorrect">`;uAH+=`${uST}</span>`;d.innerHTML=`<p><strong>Your:</strong> ${uAH}</p>`;if(!iC)d.innerHTML+=`<p><strong>Correct:</strong> <span class="correct-answer-text">${q.answer||"N/A"}</span></p>`;c.appendChild(d);}
@@ -751,8 +706,7 @@
         function reviewOrderingReview(q,uOI,c){const d=document.createElement("div");d.className="review-ordering-answer";const cO=q.answer||[],iFC=uOI&&JSON.stringify(uOI)===JSON.stringify(cO);d.innerHTML=`<p><strong>Ordering:</strong></p>`;const l=document.createElement("div");l.className="review-ordering-list";cO.forEach((cIT,cI)=>{const iD=document.createElement("div");iD.className="review-ordering-list-item";const uI=uOI?uOI.indexOf(cIT):-1,uP=(uI!==-1)?uI+1:null,cP=cI+1;let nSH='';if(uP===cP){nSH=`<span class="review-order-number review-order-correct">${cP}.</span>`;iD.style.backgroundColor='var(--correct-bg)';}else if(uP!==null){nSH=`<span class="review-order-number review-order-incorrect">${uP}.</span> <span class="review-order-number review-order-correct">(${cP}.)</span>`;iD.style.backgroundColor='var(--incorrect-bg)';}else{nSH=`<span class="review-order-number review-order-incorrect">(NP)</span> <span class="review-order-number review-order-correct">(${cP}.)</span>`;iD.style.backgroundColor='var(--partial-bg)';}iD.innerHTML=`${nSH} ${cIT}`;l.appendChild(iD);});d.appendChild(l);c.appendChild(d);}
 
         // --- Error Display ---
-        function showError(s,u,l,m=''){if(!quizContainerElement||!feedbackContainerElement||!quizButtonsContainerElement||!quizTitleElement)return;showQuizView();quizTitleElement.textContent='Error';quizContainerElement.innerHTML='';feedbackContainerElement.classList.add('hidden');quizButtonsContainerElement.innerHTML='';const dM=`No questions for "${l}" in "${u}".`;const msg=m||dM;const eD=document.createElement('div');eD.className='error-display';eD.innerHTML=`<div class="error-message">${msg}</div>`;const bB=document.createElement('button');bB.className='btn back-to-topics-btn';bB.id = 'back-to-topics-btn-error'; // ID for error screen back button
-        bB.innerHTML=`<span>⬅️</span> <span class="btn-text">Back to Topics</span>`; bB.onclick=showTopicList;eD.appendChild(bB);quizContainerElement.appendChild(eD); updateUiLanguage(mainContainerElement.classList.contains('rtl-layout')?'ar':'en');} // Update button text
+        function showError(s,u,l,m=''){if(!quizContainerElement||!feedbackContainerElement||!quizButtonsContainerElement||!quizTitleElement)return;showQuizView();quizTitleElement.textContent='Error';quizContainerElement.innerHTML='';feedbackContainerElement.classList.add('hidden');quizButtonsContainerElement.innerHTML='';const dM=`No questions for "${l}" in "${u}".`;const msg=m||dM;const eD=document.createElement('div');eD.className='error-display';eD.innerHTML=`<div class="error-message">${msg}</div>`;const bB=document.createElement('button');bB.className='btn back-to-topics-btn';bB.id='back-to-topics-btn-error';bB.innerHTML=`<span>⬅️</span> <span class="btn-text"></span>`; bB.onclick=showTopicList;eD.appendChild(bB);quizContainerElement.appendChild(eD); updateUiLanguage(mainContainerElement.classList.contains('rtl-layout')?'ar':'en');}
 
         // --- Get Questions Data ---
         function getQuestions(subj,sem,unitT,lessonT){if(!subj||!sem||!unitT||!lessonT)return console.error("Missing getQ params:",{subj,sem,unitT,lessonT}),[];try{const sD=topicsData[subj]?.[sem];if(!sD?.units)return console.warn(`Units miss: ${subj}->${sem}`),[];const u=sD.units.find(un=>un?.title===unitT);if(!u?.lessons)return console.warn(`Unit/Les miss: "${unitT}" ${subj}->${sem}.`),[];const l=u.lessons.find(ls=>ls?.title===lessonT);if(!l)return console.warn(`Les miss: "${lessonT}".`),[];if(Array.isArray(l.questions)&&l.questions.length>0)return l.questions.map(q=>({...(q.type?{}:{type:'multiple_choice'}),...q}));else return console.log(`No Qs for "${lessonT}".`),[];}catch(e){console.error("Err getQ:",e);return[];}}

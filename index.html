@@ -635,23 +635,166 @@
         function renderOrdering(q,c){if(!q.items?.length)return c.textContent='Err Ord';const n=q.items.length,i=document.createElement('p');i.className='ordering-instructions'; /* Text set by updateUiLanguage */ c.appendChild(i);const oC=document.createElement('div');oC.className='ordering-container';oC.id='ordering-list';const ch=()=>{const a=oC.querySelectorAll('.ordering-select'),s=Array.from(a).every(sl=>sl.value!==""),b=document.getElementById('submit-btn');if(b)b.disabled=!s;};const sI=q.items.map((t,ix)=>({text:t,originalIndex:ix})).sort(()=>.5-Math.random());sI.forEach(({text:t,originalIndex:oI})=>{const d=document.createElement('div');d.className='ordering-item';d.dataset.originalIndex=oI;const s=document.createElement('select');s.className='ordering-select';s.dataset.itemIndex=oI;const dO=document.createElement('option');dO.value="";dO.textContent="-";dO.selected=true;dO.disabled=true;s.appendChild(dO);for(let j=1;j<=n;j++){const op=document.createElement('option');op.value=j;op.textContent=j;s.appendChild(op);}s.addEventListener('change',ch);const sp=document.createElement('span');sp.className='ordering-text';sp.textContent=t;d.append(s,sp);oC.appendChild(d);});c.appendChild(oC); updateUiLanguage(mainContainerElement.classList.contains('rtl-layout')?'ar':'en'); /* Set instruction text */ }
 
         // --- Interaction Handlers ---
-        function handleMatchingClick(e){const cI=e.target.closest('.matching-item');if(!cI)return;const iP=cI.classList.contains('prompt-item'),iAM=cI.classList.contains('matched'),cIdx=cI.dataset.index;let sP=quizState.matchingState.selectedPromptElement;if(iAM){let pITC=-1,mITC=-1;if(iP){pITC=cIdx;mITC=quizState.matchingState.userPairs[pITC];}else{mITC=cIdx;pITC=Object.keys(quizState.matchingState.userPairs).find(p=>quizState.matchingState.userPairs[p]==mITC);}if(pITC!=-1&&mITC!==undefined){const pE=document.getElementById(`prompt-${pITC}`),mE=document.getElementById(`match-${mITC}`);if(pE){pE.classList.remove('matched','selected');pE.style.cursor='pointer';}if(mE){mE.classList.remove('matched');mE.style.cursor='pointer';}delete quizState.matchingState.userPairs[pITC];removeArrow(pITC);if(sP&&sP.dataset.index==pITC)quizState.matchingState.selectedPromptElement=null;const sB=document.getElementById('submit-btn');if(sB)sB.disabled=true;}return;}if(iP){if(cI===sP){cI.classList.remove('selected');quizState.matchingState.selectedPromptElement=null;}else{if(sP)sP.classList.remove('selected');cI.classList.add('selected');quizState.matchingState.selectedPromptElement=cI;}}else{if(sP){const pIdx=sP.dataset.index,mIdx=cIdx;quizState.matchingState.userPairs[pIdx]=parseInt(mIdx,10);sP.classList.remove('selected');sP.classList.add('matched');sP.style.cursor='pointer';cI.classList.add('matched');cI.style.cursor='pointer';drawArrow(sP,cI,pIdx);quizState.matchingState.selectedPromptElement=null;const tP=document.querySelectorAll('.prompt-item').length,mC=Object.keys(quizState.matchingState.userPairs).length,sB=document.getElementById('submit-btn');if(sB&&tP>0&&tP===mC)sB.disabled=false;}}}
+         function handleMatchingClick(event) {
+            const clickedItem = event.target.closest('.matching-item');
+            if (!clickedItem) return;
+
+            const isRTL = mainContainerElement.classList.contains('rtl-layout');
+            const isPrompt = clickedItem.classList.contains('prompt-item');
+            const isMatch = clickedItem.classList.contains('match-item');
+            const isAlreadyMatched = clickedItem.classList.contains('matched');
+            const clickedIndex = clickedItem.dataset.index;
+
+            // References to currently selected items (adapt names for clarity)
+            let selectedPrimary = isRTL ? quizState.matchingState.selectedMatchElement : quizState.matchingState.selectedPromptElement;
+            let selectedSecondary = isRTL ? quizState.matchingState.selectedPromptElement : quizState.matchingState.selectedMatchElement; // Conceptually
+
+            // --- Case 1: Clicking an already matched item (prompt or match) ---
+            if (isAlreadyMatched) {
+                let promptIndexToClear = -1;
+                let matchIndexToClear = -1;
+
+                if (isPrompt) { // Clicked a matched prompt item
+                    promptIndexToClear = clickedIndex;
+                    matchIndexToClear = quizState.matchingState.userPairs[promptIndexToClear];
+                } else { // Clicked a matched match item
+                    matchIndexToClear = clickedIndex;
+                    promptIndexToClear = Object.keys(quizState.matchingState.userPairs).find(pIdx => quizState.matchingState.userPairs[pIdx] == matchIndexToClear);
+                }
+
+                if (promptIndexToClear != -1 && matchIndexToClear !== undefined) {
+                    const promptElement = document.getElementById(`prompt-${promptIndexToClear}`);
+                    const matchElement = document.getElementById(`match-${matchIndexToClear}`);
+
+                    if (promptElement) promptElement.classList.remove('matched', 'selected');
+                    if (matchElement) matchElement.classList.remove('matched', 'selected'); // Deselect match if it was selected in RTL
+
+                    delete quizState.matchingState.userPairs[promptIndexToClear];
+                    removeArrow(promptIndexToClear);
+
+                    // Clear potentially selected state based on mode
+                    quizState.matchingState.selectedPromptElement = null;
+                    quizState.matchingState.selectedMatchElement = null;
+
+                    const submitBtn = document.getElementById('submit-btn');
+                    if (submitBtn) submitBtn.disabled = true; // Always disable on deselect
+                }
+                return; // Done handling deselect
+            }
+
+            // --- Case 2: Interaction based on LTR/RTL ---
+            if (isRTL) {
+                // --- RTL FLOW ---
+                if (isMatch) { // Clicked a MATCH item (Right column) - This is the primary selection in RTL
+                    if (clickedItem === quizState.matchingState.selectedMatchElement) {
+                        // Clicking the selected match again: Deselect it
+                        clickedItem.classList.remove('selected');
+                        quizState.matchingState.selectedMatchElement = null;
+                    } else {
+                        // Clicking a new match: Deselect old, select new
+                        if (quizState.matchingState.selectedMatchElement) {
+                            quizState.matchingState.selectedMatchElement.classList.remove('selected');
+                        }
+                        clickedItem.classList.add('selected');
+                        quizState.matchingState.selectedMatchElement = clickedItem;
+                    }
+                } else if (isPrompt && quizState.matchingState.selectedMatchElement) {
+                    // Clicked a PROMPT item (Left column) WHILE a MATCH item is selected: Create pair
+                    const matchIndex = quizState.matchingState.selectedMatchElement.dataset.index;
+                    const promptIndex = clickedIndex;
+
+                    quizState.matchingState.userPairs[promptIndex] = parseInt(matchIndex, 10);
+
+                    // Update visuals
+                    quizState.matchingState.selectedMatchElement.classList.remove('selected');
+                    quizState.matchingState.selectedMatchElement.classList.add('matched');
+                    clickedItem.classList.add('matched'); // Mark prompt as matched
+
+                    drawArrow(clickedItem, quizState.matchingState.selectedMatchElement, promptIndex); // Pass prompt, match, promptIndex
+
+                    // Clear selected state
+                    quizState.matchingState.selectedMatchElement = null;
+
+                    // Check completion
+                    const totalPrompts = document.querySelectorAll('.prompt-item').length;
+                    const matchedCount = Object.keys(quizState.matchingState.userPairs).length;
+                    const submitBtn = document.getElementById('submit-btn');
+                    if (submitBtn && totalPrompts > 0 && totalPrompts === matchedCount) {
+                        submitBtn.disabled = false;
+                    }
+                }
+                // Else: Clicking prompt with no match selected, or clicking already matched -> Do nothing further here
+
+            } else {
+                // --- LTR FLOW (Original Logic) ---
+                 if (isPrompt) { // Clicked a PROMPT item (Left column)
+                    if (clickedItem === quizState.matchingState.selectedPromptElement) {
+                        // Clicking the selected prompt again: Deselect it
+                        clickedItem.classList.remove('selected');
+                        quizState.matchingState.selectedPromptElement = null;
+                    } else {
+                        // Clicking a new prompt: Deselect old, select new
+                        if (quizState.matchingState.selectedPromptElement) {
+                            quizState.matchingState.selectedPromptElement.classList.remove('selected');
+                        }
+                        clickedItem.classList.add('selected');
+                        quizState.matchingState.selectedPromptElement = clickedItem;
+                    }
+                } else if (isMatch && quizState.matchingState.selectedPromptElement) {
+                    // Clicked a MATCH item (Right column) WHILE a PROMPT item is selected: Create pair
+                    const promptIndex = quizState.matchingState.selectedPromptElement.dataset.index;
+                    const matchIndex = clickedIndex;
+
+                    quizState.matchingState.userPairs[promptIndex] = parseInt(matchIndex, 10);
+
+                    // Update visuals
+                    quizState.matchingState.selectedPromptElement.classList.remove('selected');
+                    quizState.matchingState.selectedPromptElement.classList.add('matched');
+                    clickedItem.classList.add('matched'); // Mark match as matched
+
+                    drawArrow(quizState.matchingState.selectedPromptElement, clickedItem, promptIndex); // Pass prompt, match, promptIndex
+
+                    // Clear selected state
+                    quizState.matchingState.selectedPromptElement = null;
+
+                    // Check completion
+                    const totalPrompts = document.querySelectorAll('.prompt-item').length;
+                    const matchedCount = Object.keys(quizState.matchingState.userPairs).length;
+                    const submitBtn = document.getElementById('submit-btn');
+                    if (submitBtn && totalPrompts > 0 && totalPrompts === matchedCount) {
+                        submitBtn.disabled = false;
+                    }
+                }
+                 // Else: Clicking match with no prompt selected, or clicking already matched -> Do nothing further here
+            }
+        }
 
         // --- Arrow Drawing (Corrected for RTL) ---
-        function drawArrow(pE,mE,pI){
-            if(!matchingSvgElement||!pE||!mE)return;
-            const sR=matchingSvgElement.getBoundingClientRect();
-            const pR=pE.getBoundingClientRect();
-            const mR=mE.getBoundingClientRect();
+        // Parameters: pE = prompt element, mE = match element, pI = prompt index
+        function drawArrow(pE, mE, pI) {
+            if (!matchingSvgElement || !pE || !mE) return;
+            const sR = matchingSvgElement.getBoundingClientRect();
+            const pR = pE.getBoundingClientRect();
+            const mR = mE.getBoundingClientRect();
             const isRTL = mainContainerElement.classList.contains('rtl-layout');
-            // LTR: Start Right -> End Left | RTL: Start Left -> End Right
-            const startX = isRTL ? pR.left - sR.left : pR.right - sR.left;
-            const startY = pR.top + pR.height/2 - sR.top;
-            const endX   = isRTL ? mR.right - sR.left : mR.left - sR.left;
-            const endY   = mR.top + mR.height/2 - sR.top;
-            let l=matchingSvgElement.querySelector(`#arrow-${pI}`); if(!l){l=document.createElementNS('http://www.w3.org/2000/svg','line');l.id=`arrow-${pI}`;matchingSvgElement.appendChild(l);}
-            l.setAttribute('x1',startX);l.setAttribute('y1',startY);l.setAttribute('x2',endX);l.setAttribute('y2',endY);
-            l.setAttribute('stroke','var(--accent-color)');l.setAttribute('stroke-width','2');l.setAttribute('marker-end','url(#arrowhead)');l.style.opacity='1';
+
+            // LTR: Start Right edge of Prompt -> End Left edge of Match
+            // RTL: Start Left edge of Prompt  -> End Right edge of Match
+            const startX = isRTL ? (pR.left - sR.left) : (pR.right - sR.left);
+            const startY = pR.top + pR.height / 2 - sR.top;
+            const endX   = isRTL ? (mR.right - sR.left) : (mR.left - sR.left);
+            const endY   = mR.top + mR.height / 2 - sR.top;
+
+            let l = matchingSvgElement.querySelector(`#arrow-${pI}`);
+            if (!l) {
+                l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                l.id = `arrow-${pI}`;
+                matchingSvgElement.appendChild(l);
+            }
+            l.setAttribute('x1', startX); l.setAttribute('y1', startY);
+            l.setAttribute('x2', endX); l.setAttribute('y2', endY);
+            l.setAttribute('stroke', 'var(--accent-color)'); l.setAttribute('stroke-width', '2');
+            l.setAttribute('marker-end', 'url(#arrowhead)'); l.style.opacity = '1';
         }
         function removeArrow(pI){if(!matchingSvgElement)return;const l=matchingSvgElement.querySelector(`#arrow-${pI}`);if(l){l.style.opacity='0';setTimeout(()=>l.remove(),300);}}
         function updateAllArrowPositions(){if(!matchingSvgElement||!quizState||!quizState.questions[quizState.currentQuestionIndex]||quizState.questions[quizState.currentQuestionIndex].type!=='matching')return;const p=quizState.matchingState.userPairs;for(const pI in p){if(p.hasOwnProperty(pI)){const mI=p[pI],pE=document.getElementById(`prompt-${pI}`),mE=document.getElementById(`match-${mI}`);if(pE&&mE)drawArrow(pE,mE,pI);else removeArrow(pI);}}}

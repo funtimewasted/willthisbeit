@@ -813,73 +813,53 @@
         // --- Arrow Drawing (Corrected for RTL) ---
         // Parameters: pE = prompt element, mE = match element, pI = prompt index
         // --- Arrow Drawing (WITH DEBUGGING) ---
+                // --- Arrow Drawing (Attempt 4 - Focus on RTL End X) ---
         function drawArrow(pE, mE, pI) {
-            // Get the specific outer container for this question instance
             const outerDiv = document.getElementById(`matching-outer-${quizState.currentQuestionIndex}`);
-
             if (!matchingSvgElement || !pE || !mE || !outerDiv) {
-                 console.warn("drawArrow: Missing elements required for drawing.", { svg: !!matchingSvgElement, pE: !!pE, mE: !!mE, outer: !!outerDiv });
-                 return;
+                 console.warn("drawArrow: Missing elements."); return;
             }
 
-            const svgRect = matchingSvgElement.getBoundingClientRect(); // SVG position relative to viewport
-            const outerRect = outerDiv.getBoundingClientRect();     // Outer container relative to viewport
-            const pR = pE.getBoundingClientRect();                  // Prompt relative to viewport
-            const mR = mE.getBoundingClientRect();                  // Match relative to viewport
+            const svgRect = matchingSvgElement.getBoundingClientRect();
+            const outerRect = outerDiv.getBoundingClientRect();
+            const pR = pE.getBoundingClientRect();
+            const mR = mE.getBoundingClientRect();
             const isRTL = mainContainerElement.classList.contains('rtl-layout');
 
-            console.log(`--- Arrow ${pI} (${isRTL ? 'RTL' : 'LTR'}) ---`);
-            console.log("Outer Rect:", JSON.stringify(outerRect));
-            console.log("SVG Rect:", JSON.stringify(svgRect));
-            console.log("Prompt Rect (pR):", JSON.stringify(pR));
-            console.log("Match Rect (mR):", JSON.stringify(mR));
+            // --- DETAILED LOGGING (Keep this for now) ---
+            console.log(`%c--- Arrow ${pI} (${isRTL ? 'RTL' : 'LTR'}) ---`, 'font-weight: bold; color: purple;');
+            console.log("Outer:", { L: outerRect.left, R: outerRect.right, W: outerRect.width });
+            console.log("SVG:", { L: svgRect.left, R: svgRect.right, W: svgRect.width });
+            console.log("Prompt(pE):", { L: pR.left, R: pR.right, W: pR.width });
+            console.log("Match(mE):", { L: mR.left, R: mR.right, W: mR.width });
+            // --- END LOGGING ---
 
             let startX, startY, endX, endY;
 
-            // Calculate coordinates relative to the SVG's top-left corner.
-            // Since SVG is position:absolute top:0 left:0 within outerDiv, outerRect.left/top
-            // should be the same as svgRect.left/top IF outerDiv has no padding/border affecting SVG position.
-            // Let's consistently use svgRect as the reference frame origin.
+            // Calculate Y positions (relative to SVG top) - usually reliable
+            startY = pR.top + pR.height / 2 - svgRect.top; // Mid-point of Prompt
+            endY   = mR.top + mR.height / 2 - svgRect.top; // Mid-point of Match
+             // Note: In the handleMatchingClick logic, we pass (Prompt, Match, PromptIndex)
+             // So startY should use pR, endY should use mR, even in RTL interaction. Let's adjust:
+             // Corrected Y based on *actual* elements being connected
+             startY = pE.getBoundingClientRect().top + pE.getBoundingClientRect().height / 2 - svgRect.top;
+             endY = mE.getBoundingClientRect().top + mE.getBoundingClientRect().height / 2 - svgRect.top;
+
 
             if (isRTL) {
-                // RTL: Match column is visually LEFT, Prompt column is visually RIGHT.
-                // Arrow should go from RIGHT edge of MATCH item to LEFT edge of PROMPT item.
-                startX = mR.right - svgRect.left;   // Right edge of the visually left item (Match)
-                startY = mR.top + mR.height / 2 - svgRect.top;
-                endX   = pR.left - svgRect.left;    // Left edge of the visually right item (Prompt)
-                endY   = pR.top + pR.height / 2 - svgRect.top;
-                console.log("RTL Calc:", {startX, startY, endX, endY});
-            } else {
-                // LTR: Prompt column is visually LEFT, Match column is visually RIGHT.
-                // Arrow should go from RIGHT edge of PROMPT item to LEFT edge of MATCH item.
-                startX = pR.right - svgRect.left;   // Right edge of the visually left item (Prompt)
-                startY = pR.top + pR.height / 2 - svgRect.top;
-                endX   = mR.left - svgRect.left;    // Left edge of the visually right item (Match)
-                endY   = mR.top + mR.height / 2 - svgRect.top;
-                console.log("LTR Calc:", {startX, startY, endX, endY});
-            }
+                // RTL: User clicks Match (Visually LEFT), then Prompt (Visually RIGHT).
+                // Arrow START: Right edge of MATCH element (mE).
+                // Arrow END: Left edge of PROMPT element (pE).
 
+                startX = mR.right - svgRect.left;
+                // endX = pR.left - svgRect.left; // Original problematic calculation
 
-            let line = matchingSvgElement.querySelector(`#arrow-${pI}`);
-            if (!line) {
-                line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.id = `arrow-${pI}`;
-                matchingSvgElement.appendChild(line);
-            }
+                // Alternative endX: Calculate relative to the SVG's width.
+                // The prompt element's left edge (pR.left) is relative to the viewport.
+                // We want its position relative to the SVG's left edge.
+                endX = pR.left - svgRect.left; // Let's try this simple one again, maybe a typo before?
 
-             if (isNaN(startX) || isNaN(startY) || isNaN(endX) || isNaN(endY)) {
-                 console.error("drawArrow: Invalid coordinates calculated", { startX, startY, endX, endY, pI });
-                 line.style.opacity = '0'; // Hide line if coords are bad
-                 return;
-             }
-
-            line.setAttribute('x1', startX); line.setAttribute('y1', startY);
-            line.setAttribute('x2', endX); line.setAttribute('y2', endY);
-            line.setAttribute('stroke', 'var(--accent-color)'); line.setAttribute('stroke-width', '2');
-            line.setAttribute('marker-end', 'url(#arrowhead)');
-            // Ensure opacity is reset if it was hidden due to previous bad coords
-            line.style.opacity = '1';
-        }
+          
         function removeArrow(pI){if(!matchingSvgElement)return;const l=matchingSvgElement.querySelector(`#arrow-${pI}`);if(l){l.style.opacity='0';setTimeout(()=>l.remove(),300);}}
         function updateAllArrowPositions(){if(!matchingSvgElement||!quizState||!quizState.questions[quizState.currentQuestionIndex]||quizState.questions[quizState.currentQuestionIndex].type!=='matching')return;const p=quizState.matchingState.userPairs;for(const pI in p){if(p.hasOwnProperty(pI)){const mI=p[pI],pE=document.getElementById(`prompt-${pI}`),mE=document.getElementById(`match-${mI}`);if(pE&&mE)drawArrow(pE,mE,pI);else removeArrow(pI);}}}
         function setupArrowObserver(){const t=document.getElementById('matching-cols');if(!t||!matchingSvgElement)return console.warn("Observer: Target/SVG missing.");if(matchingArrowObserver)matchingArrowObserver.disconnect();const cfg={attributes:true,childList:true,subtree:true,characterData:true},cb=debounce(updateAllArrowPositions,50);matchingArrowObserver=new MutationObserver(cb);matchingArrowObserver.observe(t,cfg);const qCT=document.getElementById('quiz-container');if(qCT)matchingArrowObserver.observe(qCT,{attributes:true,subtree:false});setTimeout(updateAllArrowPositions,100);}

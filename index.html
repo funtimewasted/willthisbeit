@@ -815,18 +815,22 @@
         // --- Arrow Drawing (WITH DEBUGGING) ---
                 // --- Arrow Drawing (Attempt 4 - Focus on RTL End X) ---
          // --- Arrow Drawing (Corrected for RTL Y-Coordinates) ---
+        // --- Arrow Drawing (Corrected for RTL X and Y Coordinates) ---
         function drawArrow(pE, mE, pI) {
+            // pE = Prompt Element (Items column in LTR, Right column in RTL)
+            // mE = Match Element (Matches column in LTR, Left column in RTL)
+            // pI = Prompt Index (used for arrow ID)
+
             const outerDiv = document.getElementById(`matching-outer-${quizState.currentQuestionIndex}`);
 
-            // Ensure SVG exists; It should be created in renderMatching
+            // Ensure SVG exists; Locate it reliably if needed.
              if (!matchingSvgElement) {
-                 const svgContainer = outerDiv?.querySelector('svg'); // Double check if it exists just in case
+                 const svgContainer = outerDiv?.querySelector('svg#matching-arrow-svg');
                  if (svgContainer) {
                      matchingSvgElement = svgContainer;
                  } else {
-                    // This case should ideally not happen if renderMatching worked
                     console.error("drawArrow: SVG element '#matching-arrow-svg' not found within outerDiv:", outerDiv?.id);
-                    return;
+                    return; // Cannot draw without SVG
                  }
              }
 
@@ -836,49 +840,40 @@
                  return;
             }
 
-            // Get bounding rectangles *inside* the function to ensure fresh values
+            // Get bounding rectangles *inside* the function for fresh values
             const svgRect = matchingSvgElement.getBoundingClientRect();
             const pR = pE.getBoundingClientRect(); // Prompt Element Rect
             const mR = mE.getBoundingClientRect(); // Match Element Rect
             const isRTL = mainContainerElement.classList.contains('rtl-layout');
 
-            // Optional: Minimal logging for debugging
-            // console.log(`%cArrow ${pI} (${isRTL ? 'RTL' : 'LTR'})`, 'font-weight: bold; color: blue;');
-
             let startX, startY, endX, endY;
 
             // Calculate Midpoints relative to SVG Top (Common calculation)
-            // Uses the bounding rects obtained above
             const promptMidY = pR.top + pR.height / 2 - svgRect.top;
             const matchMidY  = mR.top + mR.height / 2 - svgRect.top;
 
+            // --- Calculate X and Y based on Layout Direction ---
             if (isRTL) {
-                // --- RTL Calculation ---
-                // Arrow visually goes from Match item (left side) to Prompt item (right side)
-                // Start Point: Right edge of Match item (mE)
-                // End Point:   Left edge of Prompt item (pE)
+                // RTL VISUAL: Match(Left) --> Prompt(Right)
+                // Start Point: LEFT edge of Match element (mE)
+                // End Point:   RIGHT edge of Prompt element (pE)
 
-                startX = mR.right - svgRect.left;  // X: Right edge of the Match element relative to SVG left
-                startY = matchMidY;               // Y: Vertical center of the Match element (VISUAL START)
+                startX = mR.left - svgRect.left;   // X: Left edge of the Match element relative to SVG left
+                startY = matchMidY;                // Y: Vertical center of the Match element (VISUAL START)
 
-                endX   = pR.left - svgRect.left;   // X: Left edge of the Prompt element relative to SVG left
-                endY   = promptMidY;              // Y: Vertical center of the Prompt element (VISUAL END)
-
-                // console.log("RTL Calculated:", { startX, startY, endX, endY });
+                endX   = pR.right - svgRect.left;  // X: Right edge of the Prompt element relative to SVG left
+                endY   = promptMidY;               // Y: Vertical center of the Prompt element (VISUAL END)
 
             } else {
-                // --- LTR Calculation ---
-                // Arrow visually goes from Prompt item (left side) to Match item (right side)
-                // Start Point: Right edge of Prompt item (pE)
-                // End Point:   Left edge of Match item (mE)
+                // LTR VISUAL: Prompt(Left) --> Match(Right)
+                // Start Point: RIGHT edge of Prompt element (pE)
+                // End Point:   LEFT edge of Match element (mE)
 
                 startX = pR.right - svgRect.left; // X: Right edge of the Prompt element relative to SVG left
-                startY = promptMidY;             // Y: Vertical center of the Prompt element (VISUAL START)
+                startY = promptMidY;              // Y: Vertical center of the Prompt element (VISUAL START)
 
                 endX   = mR.left - svgRect.left;  // X: Left edge of the Match element relative to SVG left
-                endY   = matchMidY;              // Y: Vertical center of the Match element (VISUAL END)
-
-                // console.log("LTR Calculated:", { startX, startY, endX, endY });
+                endY   = matchMidY;               // Y: Vertical center of the Match element (VISUAL END)
             }
 
             // Find or create the line element
@@ -886,8 +881,7 @@
             if (!line) {
                 line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 line.id = `arrow-${pI}`;
-                // Pre-style new lines for smooth transition if needed, though opacity handles it
-                line.style.opacity = '0';
+                line.style.opacity = '0'; // Start invisible for transition
                 line.style.transition = 'stroke 0.3s ease, opacity 0.3s ease';
                 matchingSvgElement.appendChild(line);
             }
@@ -909,7 +903,7 @@
             line.setAttribute('stroke-width', '2');
             line.setAttribute('marker-end', 'url(#arrowhead)');
 
-            // Use requestAnimationFrame for smoother visual update, especially if called rapidly
+            // Use rAF for smoother visual update
             requestAnimationFrame(() => {
                  line.style.opacity = '1'; // Make the line visible
             });

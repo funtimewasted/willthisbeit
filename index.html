@@ -814,86 +814,105 @@
         // Parameters: pE = prompt element, mE = match element, pI = prompt index
         // --- Arrow Drawing (WITH DEBUGGING) ---
                 // --- Arrow Drawing (Attempt 4 - Focus on RTL End X) ---
-         function drawArrow(pE, mE, pI) {
+         // --- Arrow Drawing (Corrected for RTL Y-Coordinates) ---
+        function drawArrow(pE, mE, pI) {
             const outerDiv = document.getElementById(`matching-outer-${quizState.currentQuestionIndex}`);
-            if (!matchingSvgElement || !pE || !mE || !outerDiv) {
-                 console.warn("drawArrow: Missing elements."); return;
+
+            // Ensure SVG exists; It should be created in renderMatching
+             if (!matchingSvgElement) {
+                 const svgContainer = outerDiv?.querySelector('svg'); // Double check if it exists just in case
+                 if (svgContainer) {
+                     matchingSvgElement = svgContainer;
+                 } else {
+                    // This case should ideally not happen if renderMatching worked
+                    console.error("drawArrow: SVG element '#matching-arrow-svg' not found within outerDiv:", outerDiv?.id);
+                    return;
+                 }
+             }
+
+            // Ensure all required elements are valid before proceeding
+            if (!pE || !mE || !outerDiv) {
+                 console.warn("drawArrow: Missing required elements (prompt, match, or outer div). Prompt:", pE?.id, "Match:", mE?.id, "Index:", pI);
+                 return;
             }
 
+            // Get bounding rectangles *inside* the function to ensure fresh values
             const svgRect = matchingSvgElement.getBoundingClientRect();
-            const outerRect = outerDiv.getBoundingClientRect();
-            const pR = pE.getBoundingClientRect();
-            const mR = mE.getBoundingClientRect();
+            const pR = pE.getBoundingClientRect(); // Prompt Element Rect
+            const mR = mE.getBoundingClientRect(); // Match Element Rect
             const isRTL = mainContainerElement.classList.contains('rtl-layout');
 
-            // --- DETAILED LOGGING (Keep this for now) ---
-            console.log(`%c--- Arrow ${pI} (${isRTL ? 'RTL' : 'LTR'}) ---`, 'font-weight: bold; color: purple;');
-            console.log("Outer:", { L: outerRect.left, R: outerRect.right, W: outerRect.width });
-            console.log("SVG:", { L: svgRect.left, R: svgRect.right, W: svgRect.width });
-            console.log("Prompt(pE):", { L: pR.left, R: pR.right, W: pR.width });
-            console.log("Match(mE):", { L: mR.left, R: mR.right, W: mR.width });
-            // --- END LOGGING ---
+            // Optional: Minimal logging for debugging
+            // console.log(`%cArrow ${pI} (${isRTL ? 'RTL' : 'LTR'})`, 'font-weight: bold; color: blue;');
 
             let startX, startY, endX, endY;
 
-            // Calculate Y positions (relative to SVG top) - usually reliable
-            startY = pR.top + pR.height / 2 - svgRect.top; // Mid-point of Prompt
-            endY   = mR.top + mR.height / 2 - svgRect.top; // Mid-point of Match
-             // Note: In the handleMatchingClick logic, we pass (Prompt, Match, PromptIndex)
-             // So startY should use pR, endY should use mR, even in RTL interaction. Let's adjust:
-             // Corrected Y based on *actual* elements being connected
-             startY = pE.getBoundingClientRect().top + pE.getBoundingClientRect().height / 2 - svgRect.top;
-             endY = mE.getBoundingClientRect().top + mE.getBoundingClientRect().height / 2 - svgRect.top;
-
+            // Calculate Midpoints relative to SVG Top (Common calculation)
+            // Uses the bounding rects obtained above
+            const promptMidY = pR.top + pR.height / 2 - svgRect.top;
+            const matchMidY  = mR.top + mR.height / 2 - svgRect.top;
 
             if (isRTL) {
-                // RTL: User clicks Match (Visually LEFT), then Prompt (Visually RIGHT).
-                // Arrow START: Right edge of MATCH element (mE).
-                // Arrow END: Left edge of PROMPT element (pE).
+                // --- RTL Calculation ---
+                // Arrow visually goes from Match item (left side) to Prompt item (right side)
+                // Start Point: Right edge of Match item (mE)
+                // End Point:   Left edge of Prompt item (pE)
 
-                startX = mR.right - svgRect.left;
-                // endX = pR.left - svgRect.left; // Original problematic calculation
+                startX = mR.right - svgRect.left;  // X: Right edge of the Match element relative to SVG left
+                startY = matchMidY;               // Y: Vertical center of the Match element (VISUAL START)
 
-                // Alternative endX: Calculate relative to the SVG's width.
-                // The prompt element's left edge (pR.left) is relative to the viewport.
-                // We want its position relative to the SVG's left edge.
-                endX = pR.left - svgRect.left; // Let's try this simple one again, maybe a typo before?
+                endX   = pR.left - svgRect.left;   // X: Left edge of the Prompt element relative to SVG left
+                endY   = promptMidY;              // Y: Vertical center of the Prompt element (VISUAL END)
 
-                // --- IF THE ABOVE STILL FAILS, try calculating from the right ---
-                // endX = svgRect.width - (svgRect.right - pR.left); // Distance from svg right edge to prompt left edge? No..
-                // endX = svgRect.width - (pR.right - svgRect.left); // Maybe start from svg width and subtract prompt's right position relative to svg?
-
-
-                console.log("RTL Calculated:", { startX, startY, endX, endY });
+                // console.log("RTL Calculated:", { startX, startY, endX, endY });
 
             } else {
-                // LTR: User clicks Prompt (Visually LEFT), then Match (Visually RIGHT).
-                // Arrow START: Right edge of PROMPT element (pE).
-                // Arrow END: Left edge of MATCH element (mE).
-                startX = pR.right - svgRect.left;
-                //startY = pR.top + pR.height / 2 - svgRect.top; // Already calculated above
-                endX   = mR.left - svgRect.left;
-                //endY   = mR.top + mR.height / 2 - svgRect.top; // Already calculated above
-                 console.log("LTR Calculated:", { startX, startY, endX, endY });
+                // --- LTR Calculation ---
+                // Arrow visually goes from Prompt item (left side) to Match item (right side)
+                // Start Point: Right edge of Prompt item (pE)
+                // End Point:   Left edge of Match item (mE)
+
+                startX = pR.right - svgRect.left; // X: Right edge of the Prompt element relative to SVG left
+                startY = promptMidY;             // Y: Vertical center of the Prompt element (VISUAL START)
+
+                endX   = mR.left - svgRect.left;  // X: Left edge of the Match element relative to SVG left
+                endY   = matchMidY;              // Y: Vertical center of the Match element (VISUAL END)
+
+                // console.log("LTR Calculated:", { startX, startY, endX, endY });
             }
 
+            // Find or create the line element
             let line = matchingSvgElement.querySelector(`#arrow-${pI}`);
             if (!line) {
                 line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 line.id = `arrow-${pI}`;
+                // Pre-style new lines for smooth transition if needed, though opacity handles it
+                line.style.opacity = '0';
+                line.style.transition = 'stroke 0.3s ease, opacity 0.3s ease';
                 matchingSvgElement.appendChild(line);
             }
 
-             if (isNaN(startX) || isNaN(startY) || isNaN(endX) || isNaN(endY)) {
-                 console.error("drawArrow: Invalid coordinates", { startX, startY, endX, endY, pI });
-                 line.style.opacity = '0'; return;
+            // Validate coordinates before applying
+             if (isNaN(startX) || isNaN(startY) || isNaN(endX) || isNaN(endY) ||
+                 !isFinite(startX) || !isFinite(startY) || !isFinite(endX) || !isFinite(endY)) {
+                 console.error("drawArrow: Invalid coordinates calculated.", { startX, startY, endX, endY, pI, isRTL });
+                 line.style.opacity = '0'; // Hide potentially broken line
+                 return; // Stop execution for this arrow if coords are bad
              }
 
-            line.setAttribute('x1', startX); line.setAttribute('y1', startY);
-            line.setAttribute('x2', endX); line.setAttribute('y2', endY);
-            line.setAttribute('stroke', 'var(--accent-color)'); line.setAttribute('stroke-width', '2');
+            // Apply calculated coordinates and styles
+            line.setAttribute('x1', startX);
+            line.setAttribute('y1', startY);
+            line.setAttribute('x2', endX);
+            line.setAttribute('y2', endY);
+            line.setAttribute('stroke', 'var(--accent-color)');
+            line.setAttribute('stroke-width', '2');
             line.setAttribute('marker-end', 'url(#arrowhead)');
-            line.style.opacity = '1';
+
+            // Use requestAnimationFrame for smoother visual update, especially if called rapidly
+            requestAnimationFrame(() => {
+                 line.style.opacity = '1'; // Make the line visible
+            });
         }
         function removeArrow(pI){if(!matchingSvgElement)return;const l=matchingSvgElement.querySelector(`#arrow-${pI}`);if(l){l.style.opacity='0';setTimeout(()=>l.remove(),300);}}
         function updateAllArrowPositions(){if(!matchingSvgElement||!quizState||!quizState.questions[quizState.currentQuestionIndex]||quizState.questions[quizState.currentQuestionIndex].type!=='matching')return;const p=quizState.matchingState.userPairs;for(const pI in p){if(p.hasOwnProperty(pI)){const mI=p[pI],pE=document.getElementById(`prompt-${pI}`),mE=document.getElementById(`match-${mI}`);if(pE&&mE)drawArrow(pE,mE,pI);else removeArrow(pI);}}}
